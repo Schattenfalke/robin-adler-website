@@ -1,0 +1,60 @@
+@import 'tailwindcss';
+
+/*
+ * Design-Tokens — einzige Quelle für Farben (siehe CLAUDE.md).
+ * Nie Farbwerte direkt in Komponenten schreiben, sondern die
+ * Tailwind-Klassen verwenden, die @theme unten daraus erzeugt.
+ */
+:root {
+  --black-primary: #0a0a0a;
+  --black-secondary: #1a1a1a;
+  --red-primary: #d32f2f;
+  --red-light: #ff5252;
+  --gold-primary: #d4af37;
+  --gray-text: #e0e0e0;
+  --gray-muted: #888888;
+  --green-success: #4caf50;
+  --yellow-warning: #ffc107;
+  --red-danger: #f44336;
+}
+
+/*
+ * Tailwind v4: @theme ist die Tailwind-Konfiguration.
+ * `inline` sorgt dafür, dass die Utilities direkt auf die Tokens oben
+ * verweisen (z.B. bg-black-primary → var(--black-primary)).
+ * Die Standardpalette wird entfernt, damit keine Fremdfarben einschleichen.
+ */
+@theme inline {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  --color-black-primary: var(--black-primary);
+  --color-black-secondary: var(--black-secondary);
+  --color-red-primary: var(--red-primary);
+  --color-red-light: var(--red-light);
+  --color-gold-primary: var(--gold-primary);
+  --color-gray-text: var(--gray-text);
+  --color-gray-muted: var(--gray-muted);
+  --color-green-success: var(--green-success);
+  --color-yellow-warning: var(--yellow-warning);
+  --color-red-danger: var(--red-danger);
+
+  /* TODO: @font-face ergänzen, sobald die Schriften in public/fonts/ liegen. */
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+@layer base {
+  body {
+    @apply bg-black-primary font-sans text-gray-text antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  code,
+  pre {
+    @apply font-mono;
+  }
+}
