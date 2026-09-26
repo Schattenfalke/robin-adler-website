@@ -158,7 +158,7 @@ dist/
 ├── de/review/index.html
 ├── de/impressum/index.html
 ├── de/datenschutz/index.html
-├── en/... (analog)
+├── en/... (analog, übersetzte Segmente: legal-notice, privacy)
 └── 404.html                → echte Fehlerseite, kein Routing-Hack
 ```
 
@@ -172,14 +172,25 @@ Routen werden zentral in `src/lib/routes.ts` definiert und sowohl vom Router als
 auch vom Prerenderer und vom Sitemap-Generator gelesen — eine Quelle, drei Verbraucher.
 
 ```ts
-// src/lib/routes.ts
-export const ROUTES = ['', 'build', 'fix', 'review', 'impressum', 'datenschutz'] as const;
+// src/lib/routes.ts (Auszug) — URL-Segmente pro Sprache übersetzt
 export const LOCALES = ['de', 'en'] as const;
 
-export const ALL_PATHS = LOCALES.flatMap((l) =>
-  ROUTES.map((r) => (r ? `/${l}/${r}` : `/${l}`))
-);
+export const PAGES = {
+  home:      { de: '',            en: '' },
+  build:     { de: 'build',       en: 'build' },
+  fix:       { de: 'fix',         en: 'fix' },
+  review:    { de: 'review',      en: 'review' },
+  impressum: { de: 'impressum',   en: 'legal-notice' },
+  privacy:   { de: 'datenschutz', en: 'privacy' },
+} as const;
+
+// pathFor('privacy', 'en') → '/en/privacy/' (immer mit Slash, siehe GitHub-Pages-301)
+// ALL_ROUTES → alle 12 Seiten, Quelle für Prerenderer und Sitemap
 ```
+
+**Umsetzung im Repo**: eigenes Prerender-Skript statt Plugin
+(`src/server/prerender.ts`, läuft am Ende von `npm run build`). `vite-react-ssg`
+setzt react-router v6 voraus, das Projekt nutzt die aktuelle Version.
 
 Dynamische Inhalte (Case-Modals) bleiben client-seitig — die brauchen keine eigene URL,
 solange sie nicht einzeln verlinkbar sein sollen. Falls Cases spaeter eigene URLs

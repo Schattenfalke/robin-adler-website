@@ -1,0 +1,16 @@
+{
+  "languageSwitcher": {
+    "label": "Choose language",
+    "de": "Deutsch",
+    "en": "English"
+  },
+  "pages": {
+    "home": { "title": "Home" },
+    "build": { "title": "Build" },
+    "fix": { "title": "Fix" },
+    "review": { "title": "Review" },
+    "impressum": { "title": "Legal notice" },
+    "privacy": { "title": "Privacy policy" },
+    "notFound": { "title": "Page not found" }
+  }
+}

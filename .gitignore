@@ -3,6 +3,7 @@ node_modules/
 
 # Build
 dist/
+dist-server/
 .vite/
 
 # Environment — enthaelt GA-ID und Endpoint-URL, gehoert nicht ins Repo

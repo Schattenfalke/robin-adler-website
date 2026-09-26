@@ -1,0 +1,16 @@
+{
+  "languageSwitcher": {
+    "label": "Sprache wählen",
+    "de": "Deutsch",
+    "en": "English"
+  },
+  "pages": {
+    "home": { "title": "Startseite" },
+    "build": { "title": "Build" },
+    "fix": { "title": "Fix" },
+    "review": { "title": "Review" },
+    "impressum": { "title": "Impressum" },
+    "privacy": { "title": "Datenschutz" },
+    "notFound": { "title": "Seite nicht gefunden" }
+  }
+}
