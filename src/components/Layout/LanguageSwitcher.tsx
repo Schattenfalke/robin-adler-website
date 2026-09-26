@@ -1,30 +1,35 @@
 import { useTranslation } from 'react-i18next'
-import { Link, useLocation } from 'react-router'
-import { LANGUAGES, type Language } from '../../lib/i18n'
+import { Link, useMatches } from 'react-router'
+import { LOCALES, pathFor, type Locale, type PageKey } from '../../lib/routes'
+import type { PageHandle } from '../../routes'
 
-/** Tauscht nur das Sprachpräfix aus, der Rest des Pfads bleibt erhalten. */
-const pathForLanguage = (pathname: string, language: Language): string => {
-  const [, , ...rest] = pathname.split('/')
-  return ['', language, ...rest].join('/')
+const isPageHandle = (handle: unknown): handle is PageHandle =>
+  typeof handle === 'object' && handle !== null && 'page' in handle
+
+/** Aktuelle Seite aus der Routen-Hierarchie; auf der 404-Seite keine. */
+const useCurrentPage = (): PageKey | undefined => {
+  const match = useMatches().find((m) => isPageHandle(m.handle))
+  return match && isPageHandle(match.handle) ? match.handle.page : undefined
 }
 
-export function LanguageSwitcher({ current }: { current: Language }) {
+export function LanguageSwitcher({ current }: { current: Locale }) {
   const { t } = useTranslation()
-  const { pathname, search, hash } = useLocation()
+  // Ohne bekannte Seite (404) führt der Umschalter zur Startseite der Sprache.
+  const page = useCurrentPage() ?? 'home'
 
   return (
     <nav aria-label={t('languageSwitcher.label')}>
       <ul className="flex gap-4 font-mono text-sm">
-        {LANGUAGES.map((language) => (
-          <li key={language}>
+        {LOCALES.map((locale) => (
+          <li key={locale}>
             <Link
-              to={pathForLanguage(pathname, language) + search + hash}
-              hrefLang={language}
-              lang={language}
-              aria-current={language === current ? 'true' : undefined}
+              to={pathFor(page, locale)}
+              hrefLang={locale}
+              lang={locale}
+              aria-current={locale === current ? 'true' : undefined}
               className="text-gray-muted hover:text-red-light aria-[current]:text-gray-text"
             >
-              {t(`languageSwitcher.${language}`)}
+              {t(`languageSwitcher.${locale}`)}
             </Link>
           </li>
         ))}

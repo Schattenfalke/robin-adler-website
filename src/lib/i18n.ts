@@ -2,28 +2,19 @@ import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import de from '../locales/de.json'
 import en from '../locales/en.json'
+import { DEFAULT_LOCALE, LOCALES } from './routes'
 
-export const LANGUAGES = ['de', 'en'] as const
-export type Language = (typeof LANGUAGES)[number]
-export const DEFAULT_LANGUAGE: Language = 'de'
-
-export const isLanguage = (value: string | undefined): value is Language =>
-  LANGUAGES.some((language) => language === value)
-
-/** Sprache aus dem ersten Pfadsegment, damit schon der erste Render stimmt. */
-const languageFromPath = (pathname: string): Language => {
-  const segment = pathname.split('/')[1]
-  return isLanguage(segment) ? segment : DEFAULT_LANGUAGE
-}
-
+// Ressourcen liegen im Bundle, deshalb synchron initialisieren:
+// So stimmt die Sprache schon beim ersten Render (Prerender und Hydration).
 void i18n.use(initReactI18next).init({
   resources: {
     de: { translation: de },
     en: { translation: en },
   },
-  lng: languageFromPath(window.location.pathname),
-  fallbackLng: DEFAULT_LANGUAGE,
-  supportedLngs: LANGUAGES,
+  lng: DEFAULT_LOCALE,
+  fallbackLng: DEFAULT_LOCALE,
+  supportedLngs: LOCALES,
+  initAsync: false,
   interpolation: {
     // React escaped bereits selbst.
     escapeValue: false,

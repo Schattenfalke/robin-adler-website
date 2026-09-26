@@ -1,37 +1,26 @@
 import { useLayoutEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Outlet, useParams } from 'react-router'
-import { isLanguage } from '../../lib/i18n'
-import { NotFoundPage } from '../../pages/NotFoundPage'
+import { Outlet } from 'react-router'
+import type { Locale } from '../../lib/routes'
 import { LanguageSwitcher } from './LanguageSwitcher'
 
-/** Rahmen für alle Routen unter /:lang — hält i18next und <html lang> synchron zur URL. */
-export function LanguageLayout() {
-  const { lang } = useParams()
+/** Rahmen für alle Routen einer Sprache — hält i18next und <html lang> synchron zur URL. */
+export function LanguageLayout({ locale }: { locale: Locale }) {
   const { i18n } = useTranslation()
-  const language = isLanguage(lang) ? lang : undefined
 
+  // Beim Prerender und beim ersten Client-Render ist die Sprache bereits gesetzt;
+  // das hier greift beim Wechsel über den Sprachumschalter.
   useLayoutEffect(() => {
-    if (!language) return
-    document.documentElement.lang = language
-    if (i18n.resolvedLanguage !== language) {
-      void i18n.changeLanguage(language)
+    document.documentElement.lang = locale
+    if (i18n.resolvedLanguage !== locale) {
+      void i18n.changeLanguage(locale)
     }
-  }, [language, i18n])
-
-  // Unbekanntes Präfix (z.B. /fr oder /foo) → 404 in der aktuellen Sprache.
-  if (!language) {
-    return (
-      <main className="mx-auto max-w-5xl px-4 py-16">
-        <NotFoundPage />
-      </main>
-    )
-  }
+  }, [locale, i18n])
 
   return (
     <>
       <header className="mx-auto flex max-w-5xl justify-end px-4 py-6">
-        <LanguageSwitcher current={language} />
+        <LanguageSwitcher current={locale} />
       </header>
       <main className="mx-auto max-w-5xl px-4 py-16">
         <Outlet />
