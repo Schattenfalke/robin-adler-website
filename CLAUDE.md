@@ -8,10 +8,14 @@ Code-Qualität und Performance sind Teil des Produkts, nicht Beiwerk.
 
 - React 19 + TypeScript (strict) + Vite
 - Tailwind CSS
-- Motion (framer-motion) für Scroll-Animationen
-- Three.js + @react-three/fiber für die 3D-Hero-Szene
+- `motion` für Scroll-Animationen — das ist das umbenannte `framer-motion`,
+  EIN Paket, nicht zwei. Import: `motion/react`
+- `three` (aktuelle Version) + `@react-three/fiber` + `@react-three/drei`
 - i18next, Sprachen: `de` (Standard) und `en`
 - Deployment: GitHub Pages, statischer Build, kein Server-Runtime
+- Routing: **prerendert**, eine echte HTML-Datei pro Route. Kein SPA-Fallback
+  über `404.html` — der liefert Status 404 und schadet der Auffindbarkeit.
+  Kein `_redirects`, das ist Netlify-Syntax und wirkungslos hier.
 - Kontaktformular: separater PHP-Endpoint auf fremdem Shared Hosting (nicht in diesem Repo deploybar)
 
 ## Konzept in einem Satz
@@ -51,6 +55,11 @@ Beide selbst gehostet aus `public/fonts/`. Niemals Google Fonts per CDN einbinde
 - Bilder: `loading="lazy"`, explizite `width`/`height`, damit nichts springt.
 - Alle sichtbaren Texte laufen über i18next. Keine deutschen Strings im JSX.
 - `npm run build` muss ohne Warnungen durchlaufen, bevor eine Aufgabe als fertig gilt.
+- Kein Next.js. Findet sich in den Referenzdokumenten `next/head`, `next/router`
+  oder `next/image`, ist das ein Fehler in der Vorlage — ersetze durch
+  `react-helmet-async`, `react-i18next` bzw. Build-Zeit-Bildoptimierung.
+- Routen werden zentral in `src/lib/routes.ts` gepflegt. Router, Prerenderer und
+  Sitemap lesen daraus. Keine Route an zwei Stellen hart schreiben.
 
 ## Referenzdokumente
 
