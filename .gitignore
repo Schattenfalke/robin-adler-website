@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+
+# Build
+dist/
+.vite/
+
+# Environment — enthaelt GA-ID und Endpoint-URL, gehoert nicht ins Repo
+.env
+.env.local
+.env.*.local
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.log
+
+# Rate-Limit-Daten des PHP-Endpoints (falls lokal getestet)
+php-endpoint/.ratelimit/
