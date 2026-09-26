@@ -5,12 +5,143 @@
     "en": "English"
   },
   "pages": {
-    "home": { "title": "Startseite" },
-    "build": { "title": "Build" },
-    "fix": { "title": "Fix" },
-    "review": { "title": "Review" },
-    "impressum": { "title": "Impressum" },
-    "privacy": { "title": "Datenschutz" },
-    "notFound": { "title": "Seite nicht gefunden" }
+    "home": {
+      "title": "Startseite"
+    },
+    "build": {
+      "title": "Build"
+    },
+    "fix": {
+      "title": "Fix"
+    },
+    "review": {
+      "title": "Review"
+    },
+    "impressum": {
+      "title": "Impressum"
+    },
+    "privacy": {
+      "title": "Datenschutzerklärung"
+    },
+    "notFound": {
+      "title": "Seite nicht gefunden"
+    }
+  },
+  "meta": {
+    "home": {
+      "title": "Robin Adler Systems – Architektur, Code, Klarheit",
+      "description": "Systeme bauen, die Menschen tragen – und nicht von Menschen getragen werden. Build, Fix, Review: neue Systeme, Reparatur bestehender Systeme und Code-Reviews."
+    },
+    "build": {
+      "title": "Build – Robin Adler Systems",
+      "description": "Build: neue Systeme von Grund auf – Architektur und Umsetzung."
+    },
+    "fix": {
+      "title": "Fix – Robin Adler Systems",
+      "description": "Fix: bestehende Systeme reparieren – Refactoring, Performance, Architektur."
+    },
+    "review": {
+      "title": "Review – Robin Adler Systems",
+      "description": "Review: Audits, Code-Reviews und Architektur-Checks."
+    },
+    "impressum": {
+      "title": "Impressum – Robin Adler Systems",
+      "description": "Anbieterkennzeichnung nach § 5 DDG."
+    },
+    "privacy": {
+      "title": "Datenschutzerklärung – Robin Adler Systems",
+      "description": "Wie diese Website mit personenbezogenen Daten umgeht."
+    },
+    "notFound": {
+      "title": "Seite nicht gefunden – Robin Adler Systems",
+      "description": "Diese Seite existiert nicht."
+    }
+  },
+  "footer": {
+    "navLabel": "Rechtliches",
+    "impressum": "Impressum",
+    "privacy": "Datenschutz",
+    "cookieSettings": "Cookie-Einstellungen ändern"
+  },
+  "cookies": {
+    "ariaLabel": "Hinweis zur Datenverarbeitung",
+    "text": "Ich nutze Google Analytics, um zu verstehen, welche Inhalte hier hilfreich sind. Dabei werden Cookies gesetzt und Daten an Google übermittelt. Ohne deine Zustimmung passiert nichts davon.",
+    "privacyLink": "Datenschutzerklärung",
+    "accept": "Einverstanden",
+    "reject": "Nur technisch Notwendiges"
+  },
+  "impressum": {
+    "provider": {
+      "heading": "Anbieter (§5 DDG)"
+    },
+    "country": "Deutschland",
+    "emailLabel": "E-Mail",
+    "phoneLabel": "Telefon",
+    "qualification": {
+      "heading": "Berufliche Qualifikation",
+      "text": "System Architect, Consultant, Web Developer — selbstständig tätig."
+    },
+    "responsible": {
+      "heading": "Verantwortliche Stelle (§7 DDG)",
+      "text": "Für die Inhalte dieser Webseite verantwortlich gem. § 7 Abs. 1 DDG: Robin Adler (siehe Anbieter oben)."
+    },
+    "disclaimer": {
+      "heading": "Haftungsausschluss",
+      "text": "Die Inhalte dieser Webseite werden mit größter Sorgfalt erstellt. Für Vollständigkeit, Aktualität und Richtigkeit kann jedoch keine Gewähr übernommen werden."
+    },
+    "links": {
+      "heading": "Links",
+      "text": "Diese Website enthält Links zu externen Websites. Für den Inhalt dieser verlinkten Seiten bin ich nicht verantwortlich."
+    },
+    "copyright": {
+      "heading": "Urheberrecht",
+      "text": "Alle Inhalte dieser Website (Text, Bilder, Code) sind urheberrechtlich geschützt. Jede Vervielfältigung, Bearbeitung oder Verbreitung ohne ausdrückliche Zustimmung ist untersagt."
+    }
+  },
+  "privacy": {
+    "updated": "Stand: September 2026",
+    "controller": {
+      "heading": "Verantwortlicher"
+    },
+    "collected": {
+      "heading": "1. Erhobene Daten",
+      "intro": "Bei der Nutzung unserer Website werden folgende Daten erhoben:",
+      "form": "Kontaktformular: Name, E-Mail, Telefon (optional), gewünschter Bereich (Build, Fix oder Review), Nachricht",
+      "analytics": "Google Analytics (nur nach Einwilligung): Besucherdaten, Klicks, Scroll-Verhalten",
+      "logs": "Server-Logs: IP-Adresse, Browser, Zeitstempel"
+    },
+    "legal": {
+      "heading": "2. Rechtliche Grundlage",
+      "text": "Die Verarbeitung erfolgt auf Basis von Art. 6 Abs. 1 DSGVO. Kontaktformular: Legitimes Interesse (Art. 6 Abs. 1 f DSGVO) oder explizite Einwilligung (Art. 6 Abs. 1 a DSGVO)."
+    },
+    "analytics": {
+      "heading": "3. Google Analytics",
+      "service": "Diese Website nutzt Google Analytics 4, einen Webanalysedienst der Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland — jedoch nur, wenn du im Cookie-Banner eingewilligt hast. Google Analytics 4 protokolliert oder speichert keine IP-Adressen. Google Analytics unterliegt den Datenschutzbestimmungen von Google. Weitere Informationen:",
+      "transfer": "Dabei können Daten an die Google LLC in den USA übermittelt werden. Die Google LLC ist unter dem EU-US Data Privacy Framework zertifiziert; die Übermittlung stützt sich auf den Angemessenheitsbeschluss der EU-Kommission (Art. 45 DSGVO).",
+      "basis": "Rechtsgrundlage ist deine Einwilligung (§ 25 Abs. 1 TDDDG i.V.m. Art. 6 Abs. 1 lit. a DSGVO). Die Analysedaten werden nach 2 Monaten gelöscht.",
+      "optOut": "Du kannst der Datenerhebung jederzeit widersprechen, indem du das Browser-Add-on installierst:"
+    },
+    "form": {
+      "heading": "4. Kontaktformular",
+      "text": "Deine Kontaktdaten werden nur zur Bearbeitung deiner Anfrage genutzt. Nach Abschluss der Kommunikation werden deine Daten gelöscht, es sei denn, es bestehen rechtliche Aufbewahrungspflichten.",
+      "retention": "Speicherdauer: max. 30 Tage nach letzter Nachricht."
+    },
+    "rights": {
+      "heading": "5. Deine Rechte",
+      "text": "Du hast das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung deiner Daten (Art. 15–18 DSGVO).",
+      "more": "Außerdem hast du das Recht auf Datenübertragbarkeit (Art. 20 DSGVO) und das Recht, einer Verarbeitung auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO zu widersprechen (Art. 21 DSGVO). Eine erteilte Einwilligung kannst du jederzeit mit Wirkung für die Zukunft widerrufen (Art. 7 Abs. 3 DSGVO).",
+      "complaint": "Du hast das Recht, dich bei einer Datenschutz-Aufsichtsbehörde über die Verarbeitung deiner Daten zu beschweren (Art. 77 DSGVO).",
+      "contact": "Kontakt:"
+    },
+    "hosting": {
+      "heading": "6. Hosting, CDN und Formular-Endpoint",
+      "github": "Die statischen Inhalte dieser Website werden auf GitHub Pages (GitHub Inc., USA) gehostet. Beim Aufruf werden technisch notwendige Server-Logs inkl. IP-Adresse verarbeitet. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (Bereitstellung der Website). GitHub Privacy Statement:",
+      "cloudflare": "Die DNS-Auflösung erfolgt über Cloudflare (Cloudflare Inc., USA). Cloudflare Privacy Policy:",
+      "endpoint": "Der Endpoint des Kontaktformulars (mail.robin-adler.de) läuft auf einem Server der domain-offensive GmbH in Deutschland. Dort werden die Formulardaten für den Mailversand verarbeitet sowie zur Spam-Abwehr ein gehashter, nach einer Stunde gelöschter Wert deiner IP-Adresse gespeichert. Die IP-Adresse selbst wird nicht im Klartext gespeichert."
+    },
+    "cookies": {
+      "heading": "7. Cookies",
+      "text": "Ohne deine Einwilligung werden keine Cookies gesetzt und keine Daten an Google übermittelt. Erst wenn du im Cookie-Banner auf „Einverstanden“ klickst, wird Google Analytics geladen und setzt Cookies (_ga und _ga_<ID>, Laufzeit bis 2 Jahre). Rechtsgrundlage: § 25 Abs. 1 TDDDG i.V.m. Art. 6 Abs. 1 lit. a DSGVO. Deine Entscheidung wird ausschließlich lokal in deinem Browser gespeichert (localStorage) und kann jederzeit über „Cookie-Einstellungen ändern“ im Footer widerrufen werden; die gesetzten Cookies werden dabei gelöscht."
+    }
   }
 }

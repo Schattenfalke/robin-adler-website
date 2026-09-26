@@ -5,12 +5,143 @@
     "en": "English"
   },
   "pages": {
-    "home": { "title": "Home" },
-    "build": { "title": "Build" },
-    "fix": { "title": "Fix" },
-    "review": { "title": "Review" },
-    "impressum": { "title": "Legal notice" },
-    "privacy": { "title": "Privacy policy" },
-    "notFound": { "title": "Page not found" }
+    "home": {
+      "title": "Home"
+    },
+    "build": {
+      "title": "Build"
+    },
+    "fix": {
+      "title": "Fix"
+    },
+    "review": {
+      "title": "Review"
+    },
+    "impressum": {
+      "title": "Legal notice"
+    },
+    "privacy": {
+      "title": "Privacy policy"
+    },
+    "notFound": {
+      "title": "Page not found"
+    }
+  },
+  "meta": {
+    "home": {
+      "title": "Robin Adler Systems – Architecture, Code, Clarity",
+      "description": "Building systems that carry people – not systems carried by people. Build, Fix, Review: new systems, repairing existing ones, and code reviews."
+    },
+    "build": {
+      "title": "Build – Robin Adler Systems",
+      "description": "Build: new systems from scratch – architecture and implementation."
+    },
+    "fix": {
+      "title": "Fix – Robin Adler Systems",
+      "description": "Fix: repairing existing systems – refactoring, performance, architecture."
+    },
+    "review": {
+      "title": "Review – Robin Adler Systems",
+      "description": "Review: audits, code reviews and architecture checks."
+    },
+    "impressum": {
+      "title": "Legal notice – Robin Adler Systems",
+      "description": "Provider identification according to § 5 DDG."
+    },
+    "privacy": {
+      "title": "Privacy policy – Robin Adler Systems",
+      "description": "How this website handles personal data."
+    },
+    "notFound": {
+      "title": "Page not found – Robin Adler Systems",
+      "description": "This page does not exist."
+    }
+  },
+  "footer": {
+    "navLabel": "Legal",
+    "impressum": "Legal notice",
+    "privacy": "Privacy",
+    "cookieSettings": "Change cookie settings"
+  },
+  "cookies": {
+    "ariaLabel": "Notice on data processing",
+    "text": "I use Google Analytics to understand which content here is helpful. This sets cookies and transmits data to Google. Without your consent, none of this happens.",
+    "privacyLink": "Privacy policy",
+    "accept": "Accept",
+    "reject": "Only technically necessary"
+  },
+  "impressum": {
+    "provider": {
+      "heading": "Provider"
+    },
+    "country": "Germany",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone",
+    "qualification": {
+      "heading": "Professional Qualification",
+      "text": "System Architect, Consultant, Web Developer — self-employed."
+    },
+    "responsible": {
+      "heading": "Responsible Party",
+      "text": "According to § 7 (1) DDG, responsible for the contents of this website: Robin Adler (see provider above)."
+    },
+    "disclaimer": {
+      "heading": "Disclaimer",
+      "text": "The contents of this website are created with great care. However, no guarantee can be given for completeness, timeliness, or correctness."
+    },
+    "links": {
+      "heading": "Links",
+      "text": "This website contains links to external websites. I am not responsible for the content of these linked pages."
+    },
+    "copyright": {
+      "heading": "Copyright",
+      "text": "All content on this website (text, images, code) is protected by copyright. Any reproduction, modification, or distribution without express permission is prohibited."
+    }
+  },
+  "privacy": {
+    "updated": "Last updated: September 2026",
+    "controller": {
+      "heading": "Data Controller"
+    },
+    "collected": {
+      "heading": "1. Data Collected",
+      "intro": "When using our website, the following data is collected:",
+      "form": "Contact form: name, email, phone (optional), requested area (Build, Fix or Review), message",
+      "analytics": "Google Analytics (only with consent): visitor data, clicks, scroll behavior",
+      "logs": "Server logs: IP address, browser, timestamp"
+    },
+    "legal": {
+      "heading": "2. Legal Basis",
+      "text": "Processing is based on Article 6 (1) GDPR. Contact form: Legitimate interest (Article 6 (1) f GDPR) or explicit consent (Article 6 (1) a GDPR)."
+    },
+    "analytics": {
+      "heading": "3. Google Analytics",
+      "service": "This website uses Google Analytics 4, a web analytics service provided by Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Ireland — but only if you have given consent in the cookie banner. Google Analytics 4 does not log or store IP addresses. Google Analytics is subject to Google's privacy policy. More info:",
+      "transfer": "Data may be transferred to Google LLC in the USA. Google LLC is certified under the EU-US Data Privacy Framework; the transfer is based on the European Commission's adequacy decision (Art. 45 GDPR).",
+      "basis": "The legal basis is your consent (§ 25 (1) TDDDG in conjunction with Art. 6 (1) (a) GDPR). Analytics data is deleted after 2 months.",
+      "optOut": "You can opt out of data collection at any time by installing the browser add-on:"
+    },
+    "form": {
+      "heading": "4. Contact Form",
+      "text": "Your contact data is only used to process your inquiry. After completion of the communication, your data will be deleted unless legal retention obligations apply.",
+      "retention": "Retention period: max. 30 days after last message."
+    },
+    "rights": {
+      "heading": "5. Your Rights",
+      "text": "You have the right to access, correct, delete, and restrict processing of your data (Articles 15-18 GDPR).",
+      "more": "You also have the right to data portability (Art. 20 GDPR) and the right to object to processing based on Art. 6 (1) (f) GDPR (Art. 21 GDPR). You can withdraw any consent you have given at any time with effect for the future (Art. 7 (3) GDPR).",
+      "complaint": "You have the right to lodge a complaint about the processing of your data with a data protection supervisory authority (Art. 77 GDPR).",
+      "contact": "Contact:"
+    },
+    "hosting": {
+      "heading": "6. Hosting, CDN and Form Endpoint",
+      "github": "The static content of this website is hosted on GitHub Pages (GitHub Inc., USA). Technically necessary server logs including IP address are processed on access. Legal basis: Art. 6 (1) (f) GDPR (provision of the website). GitHub Privacy Statement:",
+      "cloudflare": "DNS resolution is handled by Cloudflare (Cloudflare Inc., USA). Cloudflare Privacy Policy:",
+      "endpoint": "The contact form endpoint (mail.robin-adler.de) runs on a server operated by domain-offensive GmbH in Germany. Form data is processed there for mail delivery, and a hashed IP value is stored for spam prevention and deleted after one hour. The IP address itself is not stored in plain text."
+    },
+    "cookies": {
+      "heading": "7. Cookies",
+      "text": "No cookies are set and no data is transmitted to Google without your consent. Google Analytics is only loaded after you click “Accept” in the cookie banner, and then sets cookies (_ga and _ga_<ID>, lifetime up to 2 years). Legal basis: § 25 (1) TDDDG in conjunction with Art. 6 (1) (a) GDPR. Your choice is stored locally in your browser only (localStorage) and can be revoked at any time via “Change cookie settings” in the footer; the cookies that were set are deleted in the process."
+    }
   }
 }

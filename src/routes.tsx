@@ -44,13 +44,13 @@ export const routes: RouteObject[] = [
       ],
     }),
   ),
-  // Unbekanntes Sprachpräfix (z.B. /fr/…) → 404 in der Standardsprache.
+  // Unbekanntes Sprachpräfix (z.B. /fr/…) → 404 in der Standardsprache, mit Footer (Impressum-Link).
   {
     path: '*',
     element: (
-      <main className="mx-auto max-w-5xl px-4 py-16">
+      <LanguageLayout locale={DEFAULT_LOCALE}>
         <NotFoundPage />
-      </main>
+      </LanguageLayout>
     ),
   },
 ]

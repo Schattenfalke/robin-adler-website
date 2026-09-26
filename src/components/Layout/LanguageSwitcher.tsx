@@ -1,16 +1,7 @@
 import { useTranslation } from 'react-i18next'
-import { Link, useMatches } from 'react-router'
-import { LOCALES, pathFor, type Locale, type PageKey } from '../../lib/routes'
-import type { PageHandle } from '../../routes'
-
-const isPageHandle = (handle: unknown): handle is PageHandle =>
-  typeof handle === 'object' && handle !== null && 'page' in handle
-
-/** Aktuelle Seite aus der Routen-Hierarchie; auf der 404-Seite keine. */
-const useCurrentPage = (): PageKey | undefined => {
-  const match = useMatches().find((m) => isPageHandle(m.handle))
-  return match && isPageHandle(match.handle) ? match.handle.page : undefined
-}
+import { Link } from 'react-router'
+import { useCurrentPage } from '../../hooks/useCurrentPage'
+import { LOCALES, pathFor, type Locale } from '../../lib/routes'
 
 export function LanguageSwitcher({ current }: { current: Locale }) {
   const { t } = useTranslation()

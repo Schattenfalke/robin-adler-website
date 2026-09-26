@@ -1,12 +1,23 @@
-import { useLayoutEffect } from 'react'
+import { useLayoutEffect, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Outlet } from 'react-router'
+import { useCurrentPage } from '../../hooks/useCurrentPage'
 import type { Locale } from '../../lib/routes'
+import { CookieBanner } from '../Legal/CookieBanner'
+import { PageMeta } from '../Seo/PageMeta'
+import { Footer } from './Footer'
 import { LanguageSwitcher } from './LanguageSwitcher'
 
-/** Rahmen für alle Routen einer Sprache — hält i18next und <html lang> synchron zur URL. */
-export function LanguageLayout({ locale }: { locale: Locale }) {
+interface Props {
+  locale: Locale
+  /** Nur für die 404 außerhalb der Sprachrouten; sonst rendert die Route per Outlet. */
+  children?: ReactNode
+}
+
+/** Rahmen für alle Seiten einer Sprache — hält i18next und <html lang> synchron zur URL. */
+export function LanguageLayout({ locale, children }: Props) {
   const { i18n } = useTranslation()
+  const page = useCurrentPage()
 
   // Beim Prerender und beim ersten Client-Render ist die Sprache bereits gesetzt;
   // das hier greift beim Wechsel über den Sprachumschalter.
@@ -19,12 +30,16 @@ export function LanguageLayout({ locale }: { locale: Locale }) {
 
   return (
     <>
-      <header className="mx-auto flex max-w-5xl justify-end px-4 py-6">
-        <LanguageSwitcher current={locale} />
-      </header>
-      <main className="mx-auto max-w-5xl px-4 py-16">
-        <Outlet />
-      </main>
+      <PageMeta page={page} locale={locale} />
+      <div className="flex min-h-screen flex-col">
+        <header className="mx-auto flex w-full max-w-5xl justify-end px-4 py-6">
+          <LanguageSwitcher current={locale} />
+        </header>
+        <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-16">{children ?? <Outlet />}</main>
+        <Footer locale={locale} />
+        {/* Im Fluss nach dem Footer, damit Impressum und Datenschutz nie verdeckt sind. */}
+        <CookieBanner locale={locale} />
+      </div>
     </>
   )
 }
