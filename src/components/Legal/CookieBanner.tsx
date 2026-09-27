@@ -1,4 +1,4 @@
-import { useEffect, useSyncExternalStore } from 'react'
+import { useEffect, useLayoutEffect, useRef, useSyncExternalStore } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { loadAnalytics } from '../../lib/analytics'
@@ -22,6 +22,25 @@ export function CookieBanner({ locale }: { locale: Locale }) {
     if (consent === 'granted') loadAnalytics()
   }, [consent])
 
+  // Höhe als CSS-Variable veröffentlichen: Das mobile Menü endet darüber, und
+  // scroll-padding-bottom hält fokussierte Elemente frei (WCAG 2.4.11).
+  // Laufzeitwert, nicht per Klasse ausdrückbar — deshalb setProperty statt Tailwind.
+  const ref = useRef<HTMLElement>(null)
+  useLayoutEffect(() => {
+    const banner = ref.current
+    const root = document.documentElement
+    if (!banner) return
+    const observer = new ResizeObserver(([entry]) => {
+      const height = entry?.borderBoxSize[0]?.blockSize ?? banner.offsetHeight
+      root.style.setProperty('--banner-height', `${height}px`)
+    })
+    observer.observe(banner)
+    return () => {
+      observer.disconnect()
+      root.style.removeProperty('--banner-height')
+    }
+  }, [consent])
+
   if (consent !== null) return null
 
   const buttonClass =
@@ -29,6 +48,7 @@ export function CookieBanner({ locale }: { locale: Locale }) {
 
   return (
     <section
+      ref={ref}
       aria-labelledby="cookie-banner-text"
       className="sticky bottom-0 z-50 border-t border-red-primary bg-black-secondary"
     >

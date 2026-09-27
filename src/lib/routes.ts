@@ -20,6 +20,8 @@ export const PAGES = {
   review: { de: 'review', en: 'review' },
   impressum: { de: 'impressum', en: 'legal-notice' },
   privacy: { de: 'datenschutz', en: 'privacy' },
+  // Überschrift als Platzhalter, das Formular folgt in Phase 6.
+  contact: { de: 'kontakt', en: 'contact' },
 } as const satisfies Record<string, Record<Locale, string>>
 
 export type PageKey = keyof typeof PAGES

@@ -3,6 +3,7 @@ import { Navigate, type RouteObject } from 'react-router'
 import { LanguageLayout } from './components/Layout/LanguageLayout'
 import { DEFAULT_LOCALE, LOCALES, PAGE_KEYS, PAGES, type PageKey } from './lib/routes'
 import { BuildPage } from './pages/BuildPage'
+import { ContactPage } from './pages/ContactPage'
 import { FixPage } from './pages/FixPage'
 import { HomePage } from './pages/HomePage'
 import { ImpressumPage } from './pages/ImpressumPage'
@@ -17,6 +18,7 @@ const PAGE_ELEMENTS: Record<PageKey, ReactNode> = {
   review: <ReviewPage />,
   impressum: <ImpressumPage />,
   privacy: <PrivacyPage />,
+  contact: <ContactPage />,
 }
 
 /** Wird in `handle` jeder Seitenroute abgelegt, damit der Sprachumschalter die Gegenseite findet. */

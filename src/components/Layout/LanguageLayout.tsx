@@ -4,9 +4,9 @@ import { Outlet } from 'react-router'
 import { useCurrentPage } from '../../hooks/useCurrentPage'
 import type { Locale } from '../../lib/routes'
 import { CookieBanner } from '../Legal/CookieBanner'
+import { Header } from '../Navigation/Header'
 import { PageMeta } from '../Seo/PageMeta'
 import { Footer } from './Footer'
-import { LanguageSwitcher } from './LanguageSwitcher'
 
 interface Props {
   locale: Locale
@@ -16,7 +16,7 @@ interface Props {
 
 /** Rahmen für alle Seiten einer Sprache — hält i18next und <html lang> synchron zur URL. */
 export function LanguageLayout({ locale, children }: Props) {
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation()
   const page = useCurrentPage()
 
   // Beim Prerender und beim ersten Client-Render ist die Sprache bereits gesetzt;
@@ -32,10 +32,16 @@ export function LanguageLayout({ locale, children }: Props) {
     <>
       <PageMeta page={page} locale={locale} />
       <div className="flex min-h-screen flex-col">
-        <header className="mx-auto flex w-full max-w-5xl justify-end px-4 py-6">
-          <LanguageSwitcher current={locale} />
-        </header>
-        <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-16">{children ?? <Outlet />}</main>
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-4 focus:z-50 focus:bg-black-secondary focus:px-4 focus:py-2 focus:text-gray-text focus:outline-2 focus:outline-red-light"
+        >
+          {t('header.skipLink')}
+        </a>
+        <Header locale={locale} />
+        <main id="main" tabIndex={-1} className="mx-auto w-full max-w-5xl flex-1 px-4 py-16 outline-none">
+          {children ?? <Outlet />}
+        </main>
         <Footer locale={locale} />
         {/* Im Fluss nach dem Footer, damit Impressum und Datenschutz nie verdeckt sind. */}
         <CookieBanner locale={locale} />

@@ -5,9 +5,6 @@
     "en": "English"
   },
   "pages": {
-    "home": {
-      "title": "Startseite"
-    },
     "build": {
       "title": "Build"
     },
@@ -25,6 +22,9 @@
     },
     "notFound": {
       "title": "Seite nicht gefunden"
+    },
+    "contact": {
+      "title": "Kontakt"
     }
   },
   "meta": {
@@ -55,6 +55,10 @@
     "notFound": {
       "title": "Seite nicht gefunden – Robin Adler Systems",
       "description": "Diese Seite existiert nicht."
+    },
+    "contact": {
+      "title": "Kontakt – Robin Adler Systems",
+      "description": "Kontakt zu Robin Adler: Anfragen zu Build, Fix und Review."
     }
   },
   "footer": {
@@ -139,5 +143,37 @@
       "heading": "7. Cookies",
       "text": "Ohne deine Einwilligung werden keine Cookies gesetzt und keine Daten an Google übermittelt. Erst wenn du im Cookie-Banner auf „Einverstanden“ klickst, wird Google Analytics geladen und setzt Cookies (_ga und _ga_<ID>, Laufzeit bis 2 Jahre). Rechtsgrundlage: § 25 Abs. 1 TDDDG i.V.m. Art. 6 Abs. 1 lit. a DSGVO. Deine Entscheidung wird ausschließlich lokal in deinem Browser gespeichert (localStorage) und kann jederzeit über „Cookie-Einstellungen ändern“ im Footer widerrufen werden; die gesetzten Cookies werden dabei gelöscht."
     }
+  },
+  "hero": {
+    "title": "Systeme bauen, die Menschen tragen",
+    "subtitle": "Nicht Systeme, von denen Menschen getragen werden.",
+    "doorsLabel": "Bereiche"
+  },
+  "doors": {
+    "build": {
+      "label": "BUILD",
+      "description": "Neue Systeme, von Grund auf"
+    },
+    "fix": {
+      "label": "FIX",
+      "description": "Bestehende Systeme verbessern"
+    },
+    "review": {
+      "label": "REVIEW",
+      "description": "Architektur & Code unter der Lupe"
+    }
+  },
+  "header": {
+    "homeLabel": "Zur Startseite",
+    "navLabel": "Hauptnavigation",
+    "openMenu": "Menü öffnen",
+    "closeMenu": "Menü schließen",
+    "skipLink": "Zum Inhalt springen"
+  },
+  "nav": {
+    "build": "BUILD",
+    "fix": "FIX",
+    "review": "REVIEW",
+    "contact": "Kontakt"
   }
 }

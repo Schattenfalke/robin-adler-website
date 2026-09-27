@@ -5,9 +5,6 @@
     "en": "English"
   },
   "pages": {
-    "home": {
-      "title": "Home"
-    },
     "build": {
       "title": "Build"
     },
@@ -25,6 +22,9 @@
     },
     "notFound": {
       "title": "Page not found"
+    },
+    "contact": {
+      "title": "Contact"
     }
   },
   "meta": {
@@ -55,6 +55,10 @@
     "notFound": {
       "title": "Page not found – Robin Adler Systems",
       "description": "This page does not exist."
+    },
+    "contact": {
+      "title": "Contact – Robin Adler Systems",
+      "description": "Get in touch with Robin Adler: inquiries about Build, Fix and Review."
     }
   },
   "footer": {
@@ -139,5 +143,37 @@
       "heading": "7. Cookies",
       "text": "No cookies are set and no data is transmitted to Google without your consent. Google Analytics is only loaded after you click “Accept” in the cookie banner, and then sets cookies (_ga and _ga_<ID>, lifetime up to 2 years). Legal basis: § 25 (1) TDDDG in conjunction with Art. 6 (1) (a) GDPR. Your choice is stored locally in your browser only (localStorage) and can be revoked at any time via “Change cookie settings” in the footer; the cookies that were set are deleted in the process."
     }
+  },
+  "hero": {
+    "title": "Building systems that carry people",
+    "subtitle": "Not systems carried by people.",
+    "doorsLabel": "Areas"
+  },
+  "doors": {
+    "build": {
+      "label": "BUILD",
+      "description": "New systems, from the ground up"
+    },
+    "fix": {
+      "label": "FIX",
+      "description": "Improving existing systems"
+    },
+    "review": {
+      "label": "REVIEW",
+      "description": "Architecture & code under the magnifying glass"
+    }
+  },
+  "header": {
+    "homeLabel": "To the home page",
+    "navLabel": "Main navigation",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "skipLink": "Skip to content"
+  },
+  "nav": {
+    "build": "BUILD",
+    "fix": "FIX",
+    "review": "REVIEW",
+    "contact": "Contact"
   }
 }
