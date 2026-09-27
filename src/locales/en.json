@@ -81,10 +81,6 @@
       "heading": "Professional Qualification",
       "text": "System Architect, Consultant, Web Developer — self-employed."
     },
-    "responsible": {
-      "heading": "Responsible Party",
-      "text": "According to § 7 (1) DDG, responsible for the contents of this website: Robin Adler (see provider above)."
-    },
     "disclaimer": {
       "heading": "Disclaimer",
       "text": "The contents of this website are created with great care. However, no guarantee can be given for completeness, timeliness, or correctness."
@@ -112,11 +108,11 @@
     },
     "legal": {
       "heading": "2. Legal Basis",
-      "text": "Processing is based on Article 6 (1) GDPR. Contact form: Legitimate interest (Article 6 (1) f GDPR) or explicit consent (Article 6 (1) a GDPR)."
+      "text": "Processing is based on Article 6 (1) GDPR. Contact form: inquiries serve to take steps prior to entering into a contract (Art. 6 (1) (b) GDPR). Where an inquiry is not aimed at a contract, processing is based on my legitimate interest in responding (Art. 6 (1) (f) GDPR)."
     },
     "analytics": {
       "heading": "3. Google Analytics",
-      "service": "This website uses Google Analytics 4, a web analytics service provided by Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Ireland — but only if you have given consent in the cookie banner. Google Analytics 4 does not log or store IP addresses. Google Analytics is subject to Google's privacy policy. More info:",
+      "service": "This website uses Google Analytics 4, a web analytics service provided by Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Ireland — but only if you have given consent in the cookie banner. According to the provider, IP addresses are used to determine approximate location and are not logged in the process. Google Analytics is subject to Google's privacy policy. More info:",
       "transfer": "Data may be transferred to Google LLC in the USA. Google LLC is certified under the EU-US Data Privacy Framework; the transfer is based on the European Commission's adequacy decision (Art. 45 GDPR).",
       "basis": "The legal basis is your consent (§ 25 (1) TDDDG in conjunction with Art. 6 (1) (a) GDPR). Analytics data is deleted after 2 months.",
       "optOut": "You can opt out of data collection at any time by installing the browser add-on:"

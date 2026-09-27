@@ -14,62 +14,56 @@
 ## 6. SEO & METADATA
 
 ### 6.1 Global Meta Tags
+
+> **Kein `react-helmet-async`.** React 19 hebt `<title>`, `<meta>` und `<link>` von
+> selbst in den `<head>` — egal, wo im Baum sie gerendert werden. Unter React 19 ist
+> `react-helmet-async` nur noch ein Durchreicher (steht so in dessen README) und damit
+> eine überflüssige Abhängigkeit. Der Prerenderer (`src/server/prerender.ts`) schreibt
+> die Tags beim Build in die statische HTML-Datei jeder Route.
+
+Umsetzung im Repo: `src/components/Seo/PageMeta.tsx`, einmal im Layout gerendert.
+Titel und Beschreibung kommen aus i18next (`meta.<seite>.title/description`),
+URLs aus `src/lib/routes.ts` und `src/lib/site.ts`.
+
 ```tsx
-// src/components/Layout.tsx
-import { Helmet } from 'react-helmet-async';
-// Kein Next.js in diesem Projekt — Head-Verwaltung laeuft ueber react-helmet-async.
-// Der Provider wird einmalig in App.tsx gesetzt: <HelmetProvider>...</HelmetProvider>
-
-export const Layout = ({ children, meta }: Props) => {
-  const defaults = {
-    title: 'Robin Adler Systems – Architektur, Code, Klarheit',
-    description: 'Systeme bauen, die Menschen tragen. Not systems that carry people. Build, Fix, Review.',
-    image: 'https://robin-adler.de/og-image.jpg',
-    url: 'https://robin-adler.de',
-  };
-
-  const meta_tags = { ...defaults, ...meta };
+// src/components/Seo/PageMeta.tsx (gekürzt)
+export function PageMeta({ page, locale }: Props) {
+  const { t } = useTranslation();
+  const title = t(`meta.${page}.title`);
+  const description = t(`meta.${page}.description`);
+  const url = absoluteUrl(pathFor(page, locale));   // immer mit abschließendem Slash
 
   return (
     <>
-      <Helmet>
-        <title>{meta_tags.title}</title>
-        <meta name="description" content={meta_tags.description} />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        
-        {/* OpenGraph for social sharing */}
-        <meta property="og:title" content={meta_tags.title} />
-        <meta property="og:description" content={meta_tags.description} />
-        <meta property="og:image" content={meta_tags.image} />
-        <meta property="og:url" content={meta_tags.url} />
-        
-        {/* Twitter Card */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={meta_tags.title} />
-        <meta name="twitter:description" content={meta_tags.description} />
-        <meta name="twitter:image" content={meta_tags.image} />
+      <title>{title}</title>
+      <meta name="description" content={description} />
+      <link rel="canonical" href={url} />
+      {LOCALES.map((alt) => (
+        <link key={alt} rel="alternate" hrefLang={alt} href={absoluteUrl(pathFor(page, alt))} />
+      ))}
+      <link rel="alternate" hrefLang="x-default" href={absoluteUrl(pathFor(page, DEFAULT_LOCALE))} />
 
-        {/* Canonical */}
-        <link rel="canonical" href={meta_tags.url} />
+      {/* OpenGraph / Twitter */}
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={description} />
+      <meta property="og:url" content={url} />
+      <meta name="twitter:card" content="summary" />
+      {/* TODO: og:image / twitter:image, sobald ein Vorschaubild in public/ liegt */}
 
-        {/* Fonts (self-hosted) */}
-        <link rel="preload" href="/fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-        <link rel="preload" href="/fonts/JetBrainsMono-Variable.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+      {/* KEIN Google-Analytics-Script hier!
+          GA4 darf in Deutschland (§25 TDDDG) erst NACH aktiver Einwilligung
+          geladen werden. Das Laden passiert dynamisch in lib/analytics.ts ->
+          loadAnalytics(), ausgelöst vom CookieBanner. Siehe Abschnitt 8. */}
 
-        {/* KEIN Google-Analytics-Script hier!
-            GA4 darf in Deutschland (§25 TDDDG) erst NACH aktiver Einwilligung
-            geladen werden. Das Laden passiert dynamisch in CookieBanner.tsx /
-            lib/analytics.ts -> loadAnalytics(). Siehe Abschnitt 8. */}
-
-        {/* Google Search Console Verification (setzt KEINE Cookies, ist unproblematisch) */}
-        <meta name="google-site-verification" content={import.meta.env.VITE_GSC_VERIFICATION} />
-      </Helmet>
-
-      <body>{children}</body>
+      {/* Search Console Verification (setzt KEINE Cookies, ist unproblematisch) */}
+      {verification ? <meta name="google-site-verification" content={verification} /> : null}
     </>
   );
-};
+}
 ```
+
+Font-Preloads (`<link rel="preload" as="font">`) kommen dazu, sobald die Schriften in
+`public/fonts/` liegen (Phase 7).
 
 ### 6.2 Schema.org Structured Data
 ```tsx
@@ -81,15 +75,15 @@ export const personSchema = {
   url: 'https://robin-adler.de',
   image: 'https://robin-adler.de/robin-adler.jpg',
   description: 'System Architect, Web Developer, Consultant',
-  sameAs: [
-    'https://linkedin.com/in/robin-adler',
-    'https://github.com/robin-adler',
-  ],
+  // TODO: echte Profil-URLs eintragen. Nicht raten — erfundene sameAs-Links sind falsch.
+  // sameAs: ['https://www.linkedin.com/in/…', 'https://github.com/…'],
   jobTitle: 'System Architect & Consultant',
   knowsLanguage: ['de', 'en'],
   areaServed: 'DE',
 };
 
+// Angebote mit Preisen erst ausliefern, wenn die Preise auch sichtbar auf der Seite
+// stehen — Google verlangt, dass strukturierte Daten dem sichtbaren Inhalt entsprechen.
 export const serviceSchema = {
   '@context': 'https://schema.org',
   '@type': 'Service',
@@ -133,7 +127,10 @@ export const addSchemaScript = (schema: object) => {
 
 ## 7. LEGAL & DATENSCHUTZ
 
-### 7.1 Impressum (DDG §5 & §7 Compliant)
+### 7.1 Impressum (§ 5 DDG)
+
+> Anschrift, E-Mail und Telefon kommen im Repo aus `src/lib/site.ts` (`OWNER`),
+> nicht hart aus dem JSX. Die Werte unten sind Platzhalter der Vorlage.
 
 ```tsx
 // src/pages/[lang]/impressum.tsx
@@ -176,14 +173,18 @@ export default function Impressum() {
           </p>
         </section>
 
+        {/* AUSKOMMENTIERT — bewusst nicht ausliefern.
+            § 7 DDG ist die Haftungsregel für eigene Inhalte, keine Impressumspflicht.
+            Gemeint wäre § 18 Abs. 2 MStV ("Verantwortlich für den Inhalt"). Der setzt aber
+            journalistisch-redaktionelle Inhalte voraus, die diese Seite nicht hat.
+            Reaktivieren, sobald es einen Blog o.ä. gibt — dann mit § 18 Abs. 2 MStV
+            als Norm und vollständiger Anschrift der verantwortlichen Person.
+
         <section>
-          <h2>{isDe ? 'Verantwortliche Stelle (§7 DDG)' : 'Responsible Party'}</h2>
-          <p>
-            {isDe
-              ? 'Für die Inhalte dieser Webseite verantwortlich gem. § 7 Abs. 1 DDG: Robin Adler (siehe Anbieter oben).'
-              : 'According to § 7 (1) DDG, responsible for the contents of this website: Robin Adler (see provider above).'}
-          </p>
+          <h2>{isDe ? 'Verantwortlich für den Inhalt (§ 18 Abs. 2 MStV)' : 'Responsible for content (§ 18 (2) MStV)'}</h2>
+          <p>Robin Adler, Anschrift wie oben</p>
         </section>
+        */}
 
         <section>
           <h2>{isDe ? 'Haftungsausschluss' : 'Disclaimer'}</h2>
@@ -221,6 +222,8 @@ export default function Impressum() {
 
 ```tsx
 // src/pages/[lang]/privacy.tsx (Excerpt)
+// Vollständige, geltende Fassung: src/pages/PrivacyPage.tsx + src/locales/{de,en}.json.
+// DE und EN sind dort gleich vollständig — keine gekürzte englische Fassung.
 export default function Privacy() {
   const { i18n } = useTranslation();
   const locale = i18n.language;
@@ -254,8 +257,8 @@ export default function Privacy() {
           <h2>{isDe ? '2. Rechtliche Grundlage' : '2. Legal Basis'}</h2>
           <p>
             {isDe
-              ? 'Die Verarbeitung erfolgt auf Basis von Art. 6 Abs. 1 DSGVO. Kontaktformular: Legitimes Interesse (Art. 6 Abs. 1 f DSGVO) oder explizite Einwilligung (Art. 6 Abs. 1 a DSGVO).'
-              : 'Processing is based on Article 6 (1) GDPR. Contact form: Legitimate interest (Article 6 (1) f GDPR) or explicit consent (Article 6 (1) a GDPR).'}
+              ? 'Die Verarbeitung erfolgt auf Basis von Art. 6 Abs. 1 DSGVO. Kontaktformular: Anfragen dienen der Durchführung vorvertraglicher Maßnahmen (Art. 6 Abs. 1 lit. b DSGVO). Soweit eine Anfrage nicht auf einen Vertrag gerichtet ist, stützt sich die Verarbeitung auf mein berechtigtes Interesse an der Beantwortung (Art. 6 Abs. 1 lit. f DSGVO).'
+              : 'Processing is based on Article 6 (1) GDPR. Contact form: inquiries serve to take steps prior to entering into a contract (Art. 6 (1) (b) GDPR). Where an inquiry is not aimed at a contract, processing is based on my legitimate interest in responding (Art. 6 (1) (f) GDPR).'}
           </p>
         </section>
 
@@ -263,8 +266,22 @@ export default function Privacy() {
           <h2>{isDe ? '3. Google Analytics' : '3. Google Analytics'}</h2>
           <p>
             {isDe
-              ? 'Diese Website nutzt Google Analytics (Universal Analytics). Daten werden anonymisiert verarbeitet (IP-Masking aktiviert). Google Analytics unterliegt den Datenschutzbestimmungen von Google. Weitere Informationen: https://support.google.com/analytics/answer/6004245'
-              : 'This website uses Google Analytics. Data is processed anonymously (IP masking enabled). Google Analytics is subject to Google\'s privacy policy. More info: https://support.google.com/analytics/answer/6004245'}
+              ? 'Diese Website nutzt Google Analytics 4, einen Webanalysedienst der Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland — jedoch nur, wenn du im Cookie-Banner eingewilligt hast. IP-Adressen werden nach Angaben des Anbieters zur groben Standortbestimmung verwendet und dabei nicht protokolliert. Google Analytics unterliegt den Datenschutzbestimmungen von Google. Weitere Informationen: https://support.google.com/analytics/answer/6004245'
+              : 'This website uses Google Analytics 4, a web analytics service provided by Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Ireland — but only if you have given consent in the cookie banner. According to the provider, IP addresses are used to determine approximate location and are not logged in the process. Google Analytics is subject to Google\'s privacy policy. More info: https://support.google.com/analytics/answer/6004245'}
+          </p>
+          {/* NICHT "Universal Analytics" (seit 2023 abgeschaltet) und NICHT "IP-Masking" —
+              das ist ein UA-Begriff. Aussagen über Googles interne Verarbeitung nur als
+              Anbieterangabe formulieren ("nach Angaben des Anbieters"), sonst steht der
+              Seitenbetreiber für eine Tatsache gerade, die er nicht prüfen kann. */}
+          <p>
+            {isDe
+              ? 'Dabei können Daten an die Google LLC in den USA übermittelt werden. Die Google LLC ist unter dem EU-US Data Privacy Framework zertifiziert; die Übermittlung stützt sich auf den Angemessenheitsbeschluss der EU-Kommission (Art. 45 DSGVO).'
+              : 'Data may be transferred to Google LLC in the USA. Google LLC is certified under the EU-US Data Privacy Framework; the transfer is based on the European Commission\'s adequacy decision (Art. 45 GDPR).'}
+          </p>
+          <p>
+            {isDe
+              ? 'Rechtsgrundlage ist deine Einwilligung (§ 25 Abs. 1 TDDDG i.V.m. Art. 6 Abs. 1 lit. a DSGVO). Die Analysedaten werden nach 2 Monaten gelöscht.'
+              : 'The legal basis is your consent (§ 25 (1) TDDDG in conjunction with Art. 6 (1) (a) GDPR). Analytics data is deleted after 2 months.'}
           </p>
           <p>
             {isDe
@@ -291,6 +308,17 @@ export default function Privacy() {
             {isDe
               ? 'Du hast das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung deiner Daten (Art. 15–18 DSGVO).'
               : 'You have the right to access, correct, delete, and restrict processing of your data (Articles 15-18 GDPR).'}
+          </p>
+          {/* Pflichtangaben nach Art. 13 DSGVO — nicht weglassen: */}
+          <p>
+            {isDe
+              ? 'Außerdem hast du das Recht auf Datenübertragbarkeit (Art. 20 DSGVO) und das Recht, einer Verarbeitung auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO zu widersprechen (Art. 21 DSGVO). Eine erteilte Einwilligung kannst du jederzeit mit Wirkung für die Zukunft widerrufen (Art. 7 Abs. 3 DSGVO).'
+              : 'You also have the right to data portability (Art. 20 GDPR) and the right to object to processing based on Art. 6 (1) (f) GDPR (Art. 21 GDPR). You can withdraw any consent you have given at any time with effect for the future (Art. 7 (3) GDPR).'}
+          </p>
+          <p>
+            {isDe
+              ? 'Du hast das Recht, dich bei einer Datenschutz-Aufsichtsbehörde über die Verarbeitung deiner Daten zu beschweren (Art. 77 DSGVO).'
+              : 'You have the right to lodge a complaint about the processing of your data with a data protection supervisory authority (Art. 77 GDPR).'}
           </p>
           <p>
             {isDe ? 'Kontakt: robin@robin-adler.de' : 'Contact: robin@robin-adler.de'}
@@ -320,8 +348,9 @@ export default function Privacy() {
           <h2>{isDe ? '7. Cookies' : '7. Cookies'}</h2>
           <p>
             {isDe
-              ? 'Ohne deine Einwilligung werden keine Cookies gesetzt und keine Daten an Google übermittelt. Erst wenn du im Cookie-Banner auf "Einverstanden" klickst, wird Google Analytics geladen und setzt Cookies (_ga, _gid, Laufzeit bis 2 Jahre). Rechtsgrundlage: § 25 Abs. 1 TDDDG i.V.m. Art. 6 Abs. 1 lit. a DSGVO. Deine Entscheidung wird ausschließlich lokal in deinem Browser gespeichert (localStorage) und kann jederzeit über "Cookie-Einstellungen ändern" im Footer widerrufen werden; die gesetzten Cookies werden dabei gelöscht.'
-              : 'No cookies are set and no data is transmitted to Google without your consent. Google Analytics is only loaded after you click "Accept" in the cookie banner. Legal basis: § 25 (1) TDDDG in conjunction with Art. 6 (1) (a) GDPR. Your choice is stored locally in your browser only and can be revoked at any time via "Cookie settings" in the footer.'}
+              ? 'Ohne deine Einwilligung werden keine Cookies gesetzt und keine Daten an Google übermittelt. Erst wenn du im Cookie-Banner auf "Einverstanden" klickst, wird Google Analytics geladen und setzt Cookies (_ga und _ga_<ID>, Laufzeit bis 2 Jahre). Rechtsgrundlage: § 25 Abs. 1 TDDDG i.V.m. Art. 6 Abs. 1 lit. a DSGVO. Deine Entscheidung wird ausschließlich lokal in deinem Browser gespeichert (localStorage) und kann jederzeit über "Cookie-Einstellungen ändern" im Footer widerrufen werden; die gesetzten Cookies werden dabei gelöscht.'
+              : 'No cookies are set and no data is transmitted to Google without your consent. Google Analytics is only loaded after you click "Accept" in the cookie banner, and then sets cookies (_ga and _ga_<ID>, lifetime up to 2 years). Legal basis: § 25 (1) TDDDG in conjunction with Art. 6 (1) (a) GDPR. Your choice is stored locally in your browser only (localStorage) and can be revoked at any time via "Change cookie settings" in the footer; the cookies that were set are deleted in the process.'}
+          {/* GA4 setzt _ga und _ga_<ID>. _gid war Universal Analytics und entfällt. */}
           </p>
         </section>
       </div>
@@ -374,7 +403,7 @@ export const revokeConsent = () => {
   // GA-Cookies aktiv löschen
   document.cookie.split(';').forEach((c) => {
     const name = c.split('=')[0].trim();
-    if (name.startsWith('_ga') || name.startsWith('_gid')) {
+    if (name.startsWith('_ga')) {   // erfasst _ga und _ga_<ID> (GA4)
       document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=.robin-adler.de`;
       document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
     }
@@ -462,6 +491,15 @@ export const CookieBanner = () => {
 };
 ```
 
+> **Abweichungen im Repo** (`src/components/Legal/CookieBanner.tsx`), bitte nicht
+> "zurückkorrigieren":
+> - `sticky bottom-0` im Dokumentfluss nach dem Footer statt `fixed` — ein fixer Banner
+>   verdeckt den Footer und damit Impressum und Datenschutz.
+> - Zustand über `useSyncExternalStore` statt `useState` + `useEffect`: So steht der
+>   Banner nie im prerenderten HTML und blitzt bei bereits Entschiedenen nicht auf.
+> - Beide Buttons identisch gestaltet (nicht einer rot, einer grau) — gleichwertig heißt gleich.
+> - Keine Einblend-Animation (kein `motion`-Paket nur für den Banner).
+
 **Widerruf im Footer** (Pflicht — die Einwilligung muss so einfach widerrufbar
 sein wie sie erteilt wurde):
 ```tsx
@@ -531,13 +569,22 @@ export const loadAnalytics = () => {
   document.head.appendChild(script);
 
   window.dataLayer = window.dataLayer || [];
-  window.gtag = (...args: GtagArgs) => {
-    window.dataLayer!.push(args);
+  const dataLayer = window.dataLayer;
+  // ACHTUNG: gtag.js erwartet im dataLayer das `arguments`-Objekt, KEIN Array.
+  // Ein Array (z.B. aus Rest-Parametern `(...args) => dataLayer.push(args)`) wird von
+  // gtag.js kommentarlos verworfen — GA misst dann schlicht nichts, ohne Fehlermeldung.
+  // Deshalb eine klassische `function` statt Pfeilfunktion. Ausnahme von der Stilregel
+  // "prefer-rest-params" nach CLAUDE.md, Abschnitt "Korrektheit schlägt Stilregel".
+  window.gtag = function gtag(..._args: GtagArgs) {
+    // oxlint-disable-next-line prefer-rest-params
+    dataLayer.push(arguments);
   };
 
   window.gtag('js', new Date());
+  // KEIN `anonymize_ip: true`: Relikt aus Universal Analytics. Unter GA4 wirkungslos,
+  // weil GA4 IP-Adressen nach Angaben von Google ohnehin nicht protokolliert. Der
+  // Parameter würde eine Schutzmaßnahme vortäuschen, die nichts bewirkt.
   window.gtag('config', id, {
-    anonymize_ip: true,          // IP-Kürzung
     allow_google_signals: false, // keine Werbe-/Remarketing-Funktionen
     allow_ad_personalization_signals: false,
     cookie_flags: 'SameSite=Strict;Secure',
@@ -546,7 +593,14 @@ export const loadAnalytics = () => {
   loaded = true;
 };
 
-/** Page-Views bei Client-seitiger Navigation. No-op ohne Consent. */
+/**
+ * WARNUNG — im Repo bewusst NICHT eingebaut. Doppelzählung!
+ * GA4 erfasst Seitenwechsel einer Single-Page-App bereits selbst über die
+ * "Erweiterte Messung" (Seitenaufrufe bei Browserverlaufsereignissen, standardmäßig an).
+ * Zusätzlich manuell `page_view` zu senden zählt jeden Aufruf doppelt.
+ * Nur verwenden, wenn im GA4-Datenstream die Verlaufsereignisse abgeschaltet werden —
+ * und dann auch `send_page_view: false` in der config setzen.
+ */
 export const usePageTracking = () => {
   const location = useLocation();
 
@@ -590,6 +644,10 @@ ist auch eine Positionierungsfrage):
 ```html
 <meta name="google-site-verification" content="YOUR_VERIFICATION_CODE" />
 ```
+
+> Im Repo werden `sitemap.xml` und `robots.txt` NICHT von Hand gepflegt, sondern vom
+> Prerenderer aus `src/lib/routes.ts` erzeugt (mit hreflang-Alternates, URLs mit Slash).
+> Kein `Disallow: /admin` — es gibt keinen Admin-Bereich. Die Beispiele unten sind nur Illustration.
 
 **Generate sitemap:**
 ```xml

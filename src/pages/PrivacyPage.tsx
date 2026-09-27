@@ -15,7 +15,8 @@ const LINKS = {
  * (Pflichtangaben nach Art. 13 DSGVO bzw. sachliche Korrekturen):
  * - Anschrift des Verantwortlichen
  * - GA: "Universal Analytics" → GA4, Anbieter Google Ireland, USA-Übermittlung (DPF),
- *   Rechtsgrundlage, Speicherdauer 2 Monate, keine IP-Speicherung statt "IP-Masking"
+ *   Rechtsgrundlage, Speicherdauer 2 Monate; IP-Umgang als Anbieterangabe statt "IP-Masking"
+ * - Kontaktformular: Art. 6 Abs. 1 lit. b, lit. f als Auffang
  * - Rechte: Art. 20, 21, 7 Abs. 3 und Beschwerderecht Art. 77
  * - Cookies: GA4 setzt _ga und _ga_<ID> (nicht _gid)
  * Vor dem Go-Live rechtlich prüfen lassen.

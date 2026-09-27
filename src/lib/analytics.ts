@@ -28,14 +28,16 @@ export const loadAnalytics = () => {
   window.dataLayer = window.dataLayer ?? []
   const dataLayer = window.dataLayer
   // gtag.js erwartet das arguments-Objekt, kein Array — mit einem Array
-  // werden die Befehle stillschweigend ignoriert. Deshalb keine Pfeilfunktion.
+  // werden die Befehle stillschweigend ignoriert. Deshalb keine Pfeilfunktion und
+  // eine begründete Ausnahme von prefer-rest-params (CLAUDE.md: "Korrektheit schlägt Stilregel").
   window.gtag = function gtag(..._args: GtagArgs) {
     // oxlint-disable-next-line prefer-rest-params
     dataLayer.push(arguments)
   }
 
   window.gtag('js', new Date())
-  // GA4 protokolliert keine IP-Adressen, `anonymize_ip` wäre wirkungslos.
+  // Kein `anonymize_ip`: UA-Relikt, unter GA4 wirkungslos (IP-Adressen werden nach
+  // Angaben von Google nicht protokolliert) — würde nur Schutz vortäuschen.
   // Seitenaufrufe bei Navigation erfasst GA4 selbst (Verlaufsereignisse, "Erweiterte Messung").
   window.gtag('config', id, {
     allow_google_signals: false, // keine Werbe-/Remarketing-Funktionen

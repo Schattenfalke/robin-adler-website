@@ -74,7 +74,7 @@ const deleteAnalyticsCookies = () => {
 
   document.cookie.split(';').forEach((cookie) => {
     const name = cookie.split('=')[0]?.trim() ?? ''
-    if (!name.startsWith('_ga') && !name.startsWith('_gid')) return
+    if (!name.startsWith('_ga')) return // _ga und _ga_<ID> (GA4)
     document.cookie = `${name}=; ${expired}`
     domains.forEach((domain) => {
       document.cookie = `${name}=; ${expired}; domain=${domain}`

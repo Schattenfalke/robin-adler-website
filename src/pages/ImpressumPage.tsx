@@ -25,9 +25,10 @@ export function ImpressumPage() {
         <p>{t('impressum.qualification.text')}</p>
       </LegalSection>
 
-      <LegalSection heading={t('impressum.responsible.heading')}>
-        <p>{t('impressum.responsible.text')}</p>
-      </LegalSection>
+      {/* Bewusst kein Abschnitt "Verantwortliche Stelle (§ 7 DDG)": § 7 DDG ist die
+          Haftungsregel, keine Impressumspflicht. Gemeint wäre § 18 Abs. 2 MStV, der
+          journalistisch-redaktionelle Inhalte voraussetzt. Bei einem späteren Blog o.ä.
+          reaktivieren (Überschrift + Name + Anschrift, Texte DE/EN) — siehe docs/04-legal.md, 7.1. */}
 
       <LegalSection heading={t('impressum.disclaimer.heading')}>
         <p>{t('impressum.disclaimer.text')}</p>

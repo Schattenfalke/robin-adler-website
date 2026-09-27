@@ -81,10 +81,6 @@
       "heading": "Berufliche Qualifikation",
       "text": "System Architect, Consultant, Web Developer — selbstständig tätig."
     },
-    "responsible": {
-      "heading": "Verantwortliche Stelle (§7 DDG)",
-      "text": "Für die Inhalte dieser Webseite verantwortlich gem. § 7 Abs. 1 DDG: Robin Adler (siehe Anbieter oben)."
-    },
     "disclaimer": {
       "heading": "Haftungsausschluss",
       "text": "Die Inhalte dieser Webseite werden mit größter Sorgfalt erstellt. Für Vollständigkeit, Aktualität und Richtigkeit kann jedoch keine Gewähr übernommen werden."
@@ -112,11 +108,11 @@
     },
     "legal": {
       "heading": "2. Rechtliche Grundlage",
-      "text": "Die Verarbeitung erfolgt auf Basis von Art. 6 Abs. 1 DSGVO. Kontaktformular: Legitimes Interesse (Art. 6 Abs. 1 f DSGVO) oder explizite Einwilligung (Art. 6 Abs. 1 a DSGVO)."
+      "text": "Die Verarbeitung erfolgt auf Basis von Art. 6 Abs. 1 DSGVO. Kontaktformular: Anfragen dienen der Durchführung vorvertraglicher Maßnahmen (Art. 6 Abs. 1 lit. b DSGVO). Soweit eine Anfrage nicht auf einen Vertrag gerichtet ist, stützt sich die Verarbeitung auf mein berechtigtes Interesse an der Beantwortung (Art. 6 Abs. 1 lit. f DSGVO)."
     },
     "analytics": {
       "heading": "3. Google Analytics",
-      "service": "Diese Website nutzt Google Analytics 4, einen Webanalysedienst der Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland — jedoch nur, wenn du im Cookie-Banner eingewilligt hast. Google Analytics 4 protokolliert oder speichert keine IP-Adressen. Google Analytics unterliegt den Datenschutzbestimmungen von Google. Weitere Informationen:",
+      "service": "Diese Website nutzt Google Analytics 4, einen Webanalysedienst der Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland — jedoch nur, wenn du im Cookie-Banner eingewilligt hast. IP-Adressen werden nach Angaben des Anbieters zur groben Standortbestimmung verwendet und dabei nicht protokolliert. Google Analytics unterliegt den Datenschutzbestimmungen von Google. Weitere Informationen:",
       "transfer": "Dabei können Daten an die Google LLC in den USA übermittelt werden. Die Google LLC ist unter dem EU-US Data Privacy Framework zertifiziert; die Übermittlung stützt sich auf den Angemessenheitsbeschluss der EU-Kommission (Art. 45 DSGVO).",
       "basis": "Rechtsgrundlage ist deine Einwilligung (§ 25 Abs. 1 TDDDG i.V.m. Art. 6 Abs. 1 lit. a DSGVO). Die Analysedaten werden nach 2 Monaten gelöscht.",
       "optOut": "Du kannst der Datenerhebung jederzeit widersprechen, indem du das Browser-Add-on installierst:"
