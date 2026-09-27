@@ -1,0 +1,63 @@
+# Baut die Seite und veröffentlicht sie auf GitHub Pages.
+# Ziel-Domain: public/CNAME (steuert auch SITE_URL und noindex, siehe vite.config.ts).
+# Einmalig nötig: Settings → Pages → Source "GitHub Actions" und Custom domain eintragen.
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # Pull Requests werden nur gebaut und geprüft, nicht veröffentlicht.
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Nie zwei Deployments gleichzeitig; ein laufendes wird nicht abgebrochen.
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm run lint
+      # Kein VITE_GA_ID: Die Vorschau misst nichts. Für die Produktion später als
+      # Repository-Variable ergänzen: env: VITE_GA_ID: ${{ vars.VITE_GA_ID }}
+      - run: npm run build
+
+      # Prerendering-Nachweis: Ohne echte HTML-Datei pro Route liefert Pages 404.
+      - name: Verify prerendered routes
+        run: |
+          for file in index.html 404.html de/index.html de/build/index.html en/privacy/index.html sitemap.xml robots.txt; do
+            test -s "dist/$file" || { echo "::error::dist/$file fehlt"; exit 1; }
+          done
+          grep -q '<h1' dist/de/build/index.html || { echo "::error::de/build ist nicht prerendert"; exit 1; }
+
+      - uses: actions/upload-pages-artifact@v3
+        if: github.event_name != 'pull_request'
+        with:
+          path: dist
+
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

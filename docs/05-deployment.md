@@ -41,7 +41,7 @@
   - [ ] GA4 ID in `.env.local`
   - [ ] **Test**: Seite im Inkognito-Modus öffnen → Netzwerk-Tab → KEIN Request an
         `googletagmanager.com` vor dem Klick auf "Akzeptieren"
-  - [ ] IP-Anonymisierung aktiv (`anonymize_ip: true`)
+  - [ ] Kein `anonymize_ip` im Code (UA-Relikt, unter GA4 wirkungslos — siehe docs/04-legal.md)
   - [ ] Google Signals + Werbefunktionen in GA4 DEAKTIVIERT (sonst zusätzliche Einwilligungspflicht)
   - [ ] Datenaufbewahrung in GA4 auf 2 Monate gesetzt (Verwaltung → Dateneinstellungen)
   - [ ] Search Console verifiziert
@@ -64,11 +64,12 @@
   - [ ] Seitenaufruf mit deaktiviertem JavaScript zeigt lesbaren Inhalt
   - [ ] `404.html` ist eine echte Fehlerseite, KEIN kopiertes `index.html`
   - [ ] Kein `_redirects` im Build (Netlify-Syntax, hier wirkungslos)
-  - [ ] `public/CNAME` enthaelt `robin-adler.de`
+  - [ ] `public/CNAME` enthaelt `robin-adler.de` (während der Vorschau: `preview.robin-adler.de`)
+  - [ ] Produktions-Build hat KEIN `noindex` (`curl -s https://robin-adler.de/de/ | grep robots` → leer)
 
 - [ ] **DNS & Hosting**
-  - [ ] GitHub Pages configured (Settings → Pages → Main/dist branch)
-  - [ ] CNAME file in public/ (robin-adler.de)
+  - [ ] GitHub Pages: Source "GitHub Actions", Custom domain gesetzt, Enforce HTTPS an
+  - [ ] Domain in GitHub verifiziert (Verified domains)
   - [ ] CloudFlare DNS pointing to GitHub Pages
   - [ ] SSL/TLS certificate valid (GitHub auto-provides)
 
@@ -80,46 +81,33 @@
 
 ### 9.2 GitHub Actions Deployment
 
-```yaml
-# .github/workflows/deploy.yml
-name: Deploy to GitHub Pages
+Umgesetzt in `.github/workflows/deploy.yml` — dort ist die geltende Fassung.
 
-on:
-  push:
-    branches: [main]
+- Offizielle Pages-Actions (`upload-pages-artifact` + `deploy-pages`), **nicht**
+  `peaceiris/actions-gh-pages`: kein `gh-pages`-Branch, kein Token-Push, Deployment
+  als Artefakt mit eigener Umgebung `github-pages`.
+- Node 22 (Node 18 ist seit 2025 ohne Support), Actions in aktuellen Major-Versionen.
+- Push auf `main` → bauen, prüfen, deployen. Pull Requests → nur bauen und prüfen.
+- Prüfschritt: Der Build bricht ab, wenn prerenderte Routen, `404.html`, Sitemap
+  oder `robots.txt` fehlen.
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: npm
-      
-      - run: npm ci
-      - run: npm run build
-      
-      - uses: actions/upload-artifact@v3
-        with:
-          name: dist
-          path: dist
+**Einmalig in GitHub einstellen** (kann der Workflow nicht selbst):
+1. Settings → Pages → Build and deployment → Source: **GitHub Actions**
+2. Settings → Pages → Custom domain: die Domain aus `public/CNAME` eintragen, speichern,
+   nach dem Zertifikat **Enforce HTTPS** aktivieren.
+   Wichtig: Bei Deployments per Actions ignoriert GitHub die CNAME-Datei im Artefakt —
+   die Domain wirkt nur über diese Einstellung.
+3. Empfohlen: Domain unter Profil → Settings → Pages → *Verified domains* verifizieren
+   (schützt vor Übernahme der Subdomain durch fremde Repositories).
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: dist
-          path: dist
-      
-      - uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-```
+**Vorschau vs. Produktion** — gesteuert allein über `public/CNAME`:
+
+| `public/CNAME`           | `SITE_URL`                        | Indexierung                         |
+|--------------------------|-----------------------------------|-------------------------------------|
+| `preview.robin-adler.de` | `https://preview.robin-adler.de`  | jede Seite `noindex, nofollow`, keine Sitemap in robots.txt |
+| `robin-adler.de`         | `https://robin-adler.de`          | normal, Sitemap in robots.txt       |
+
+Go-Live = `public/CNAME` auf `robin-adler.de` ändern + Custom domain in den Settings umstellen.
 
 ### 9.3 Environment Variables
 
@@ -138,12 +126,19 @@ VITE_CONTACT_API=https://mail.robin-adler.de/contact.php
 
 ### 9.4 DNS Setup (CloudFlare)
 
-In CloudFlare DNS Dashboard:
+Ziel ist immer `schattenfalke.github.io` (GitHub-Konto des Repos), **nicht** `robin-adler.github.io`.
+Proxy-Status: **DNS only** (graue Wolke), sonst kann GitHub kein Zertifikat ausstellen.
+
+Vorschau:
 ```
-Type: CNAME
-Name: robin-adler.de
-Content: robin-adler.github.io
-TTL: Auto
+Type: CNAME   Name: preview   Content: schattenfalke.github.io   Proxy: DNS only   TTL: Auto
+```
+
+Produktion (Apex-Domain — Cloudflare löst CNAME am Apex per "CNAME Flattening" auf;
+alternativ die vier A-Records von GitHub Pages):
+```
+Type: CNAME   Name: @     Content: schattenfalke.github.io   Proxy: DNS only   TTL: Auto
+Type: CNAME   Name: www   Content: schattenfalke.github.io   Proxy: DNS only   TTL: Auto
 ```
 
 ---

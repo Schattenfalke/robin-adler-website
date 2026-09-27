@@ -6,7 +6,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { ALL_ROUTES, DEFAULT_LOCALE, LOCALES, localeFromPath, pathFor } from '../lib/routes'
-import { absoluteUrl } from '../lib/site'
+import { absoluteUrl, IS_PRODUCTION, SITE_URL } from '../lib/site'
 import { render } from './render'
 
 const DIST = join(process.cwd(), 'dist')
@@ -93,6 +93,13 @@ ${sitemapEntries.join('\n')}
 </urlset>
 `,
 )
-await write('robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${absoluteUrl('/sitemap.xml')}\n`)
+// Vorschau: Crawlen erlauben, damit Suchmaschinen das noindex der Seiten überhaupt sehen
+// (ein Disallow würde es verbergen). Die Sitemap wird dort nicht beworben.
+await write(
+  'robots.txt',
+  IS_PRODUCTION
+    ? `User-agent: *\nAllow: /\n\nSitemap: ${absoluteUrl('/sitemap.xml')}\n`
+    : `# Vorschau-Build (${SITE_URL}) — alle Seiten tragen noindex.\nUser-agent: *\nAllow: /\n`,
+)
 
-console.log(`prerendered ${ALL_ROUTES.length} routes + 404.html + index.html + sitemap.xml + robots.txt`)
+console.log(`${SITE_URL}${IS_PRODUCTION ? '' : ' (Vorschau, noindex)'}: prerendered ${ALL_ROUTES.length} routes + 404.html + index.html + sitemap.xml + robots.txt`)

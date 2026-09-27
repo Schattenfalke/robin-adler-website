@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { DEFAULT_LOCALE, LOCALES, pathFor, type Locale, type PageKey } from '../../lib/routes'
 import { homeSchema, serializeJsonLd } from '../../lib/schema'
-import { absoluteUrl } from '../../lib/site'
+import { absoluteUrl, IS_PRODUCTION } from '../../lib/site'
 
 const OG_LOCALE: Record<Locale, string> = { de: 'de_DE', en: 'en_US' }
 
@@ -28,7 +28,12 @@ export function PageMeta({ page, locale }: Props) {
     <>
       <title>{title}</title>
       <meta name="description" content={description} />
-      {page ? null : <meta name="robots" content="noindex" />}
+      {/* 404 nie indexieren; Vorschau-Builds gar nicht (auch keinen Links folgen). */}
+      {!IS_PRODUCTION ? (
+        <meta name="robots" content="noindex, nofollow" />
+      ) : page ? null : (
+        <meta name="robots" content="noindex" />
+      )}
       {url ? <link rel="canonical" href={url} /> : null}
       {page
         ? LOCALES.map((alt) => (
