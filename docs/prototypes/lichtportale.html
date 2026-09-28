@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lichtportale — Prototyp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+    --black:#0a0a0a;
+    --red:#d32f2f;
+    --red-light:#ff5252;
+    --text:#e8e8e8;
+    --muted:#8a8a8a;
+    color-scheme:dark;
+  }
+  *,*::before,*::after{box-sizing:inherit}
+  html,body{height:100%;margin:0}
+  body{
+    background:var(--black);
+    color:var(--text);
+    font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+    overflow-x:hidden;
+  }
+ 
+  .stage{
+    position:relative;
+    min-height:100svh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:2rem 1rem 5rem;
+  }
+ 
+  canvas#portals{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    display:block;
+    pointer-events:none;
+  }
+ 
+  .headline{
+    position:relative;
+    z-index:2;
+    text-align:center;
+    max-width:54rem;
+    margin-bottom:clamp(2.5rem,8vh,5.5rem);
+  }
+  .headline h1{
+    font-weight:500;
+    font-size:clamp(1.85rem,5vw,3.5rem);
+    line-height:1.14;
+    letter-spacing:-0.022em;
+    margin:0 0 .9rem;
+    color:#f5f5f5;
+  }
+  .headline h1 em{font-style:normal;color:var(--red-light)}
+  .headline p{
+    margin:0;
+    color:var(--muted);
+    font-size:clamp(.95rem,1.8vw,1.12rem);
+  }
+ 
+  .doors{
+    position:relative;
+    z-index:2;
+    display:flex;
+    gap:clamp(1rem,7vw,6rem);
+    align-items:flex-start;
+    justify-content:center;
+  }
+ 
+  .door{
+    appearance:none;background:none;border:0;padding:0;
+    cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;
+    gap:1.4rem;
+    font:inherit;color:inherit;
+    transition:transform .55s cubic-bezier(.2,.7,.3,1);
+  }
+  .door:hover,.door:focus-visible{transform:translateY(-8px)}
+  .door:focus-visible{outline:2px solid var(--red-light);outline-offset:18px;border-radius:50%}
+ 
+  /* Der Kreis ist nur ein Platzhalter — gemalt wird auf dem Canvas dahinter */
+  .ring{
+    width:clamp(96px,21vw,190px);
+    aspect-ratio:1;
+    border-radius:50%;
+  }
+ 
+  .label{
+    font-family:"JetBrains Mono",ui-monospace,monospace;
+    font-weight:700;
+    font-size:clamp(.95rem,2.2vw,1.28rem);
+    letter-spacing:.16em;
+    color:#f2f2f2;
+  }
+  .desc{
+    font-size:clamp(.72rem,1.5vw,.87rem);
+    color:var(--muted);
+    max-width:16ch;text-align:center;line-height:1.45;
+    margin-top:-.7rem;
+    transition:color .4s ease;
+  }
+  .door:hover .desc,.door:focus-visible .desc{color:#c0c0c0}
+ 
+  .panel{
+    position:fixed;left:50%;transform:translateX(-50%);
+    bottom:calc(1rem + env(safe-area-inset-bottom,0px));
+    z-index:10;display:flex;gap:.35rem;padding:.35rem;
+    background:rgba(18,18,18,.93);border:1px solid #2b2b2b;
+    border-radius:999px;backdrop-filter:blur(8px);
+    font-size:.72rem;font-family:"JetBrains Mono",monospace;
+  }
+  .panel button{
+    appearance:none;background:none;border:0;color:var(--muted);
+    padding:.45rem .8rem;border-radius:999px;cursor:pointer;
+    font:inherit;transition:.25s;white-space:nowrap;
+  }
+  .panel button[aria-pressed="true"]{background:#2f2f2f;color:#f0f0f0}
+  .panel button:focus-visible{outline:2px solid var(--red-light);outline-offset:2px}
+ 
+  @media (max-width:600px){
+    .doors{gap:.6rem}
+    .desc{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .door,.desc{transition:none}
+  }
+</style>
+</head>
+<body>
+ 
+<div class="stage">
+  <canvas id="portals" aria-hidden="true"></canvas>
+ 
+  <div class="headline">
+    <h1>Systeme bauen, die Menschen tragen.<br><em>Nicht umgekehrt.</em></h1>
+    <p>Drei Wege. Such dir einen aus.</p>
+  </div>
+ 
+  <div class="doors" id="doors">
+    <button class="door" data-i="0">
+      <span class="ring"></span>
+      <span class="label">BUILD</span>
+      <span class="desc">Neue Systeme, von Grund auf</span>
+    </button>
+    <button class="door" data-i="1">
+      <span class="ring"></span>
+      <span class="label">FIX</span>
+      <span class="desc">Bestehende Systeme verbessern</span>
+    </button>
+    <button class="door" data-i="2">
+      <span class="ring"></span>
+      <span class="label">REVIEW</span>
+      <span class="desc">Architektur &amp; Code unter der Lupe</span>
+    </button>
+  </div>
+</div>
+ 
+<div class="panel" role="group" aria-label="Prototyp-Einstellungen">
+  <button id="modeHover" aria-pressed="true">Farbe bei Hover</button>
+  <button id="modeAlways" aria-pressed="false">Farbe immer</button>
+  <button id="toggleMotion" aria-pressed="true">Bewegung</button>
+</div>
+ 
+<script>
+(() => {
+  const canvas  = document.getElementById('portals');
+  const ctx     = canvas.getContext('2d', { alpha:false });
+  const doorEls = [...document.querySelectorAll('.door')];
+ 
+  const REST  = [211,47,47];                                  // Markenrot im Ruhezustand
+  const HOVER = [[255,82,82],[212,175,55],[188,214,235]];     // BUILD rot · FIX gold · REVIEW kalt
+ 
+  // Gesamttempo. 1 = Referenz. Alles Bewegte haengt hieran, damit Boegen,
+  // Atmen und Partikel nie auseinanderlaufen.
+  const SPEED = 1;
+ 
+  let colorMode = 'hover';   // 'hover' = Farbe erst beim Ansteuern, 'always' = dauerhaft
+  let motion = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let dpr = 1, W = 0, H = 0, t = 0;
+ 
+  const portals = [0,1,2].map(() => ({
+    cx:0, cy:0, r:0,
+    glow:0, target:0,        // 0 = Ruhe, 1 = angesteuert, negativ = zurückgetreten
+    spin:0,
+    parts:[]
+  }));
+ 
+  function resize(){
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = canvas.clientWidth; H = canvas.clientHeight;
+    canvas.width  = Math.round(W * dpr);
+    canvas.height = Math.round(H * dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    measure();
+  }
+ 
+  // Die Wirbel werden exakt dort gemalt, wo die HTML-Kreise liegen.
+  // Damit stimmen Licht und Layout auf jedem Viewport überein.
+  function measure(){
+    const base = canvas.getBoundingClientRect();
+    doorEls.forEach((el,i) => {
+      const r = el.querySelector('.ring').getBoundingClientRect();
+      const p = portals[i];
+      p.cx = r.left - base.left + r.width/2;
+      p.cy = r.top  - base.top  + r.height/2;
+      p.r  = r.width/2;
+      if (!p.parts.length) p.parts = Array.from({length:52}, () => newPart(true));
+    });
+  }
+ 
+  function newPart(spread){
+    return {
+      a: Math.random()*Math.PI*2,                  // Winkel auf der Bahn
+      rad: spread ? Math.random() : 1,             // 1 = aussen, 0 = Zentrum
+      sp: (0.00012 + Math.random()*0.00022) * SPEED,           // Winkelgeschwindigkeit
+      pull: (0.00005 + Math.random()*0.00011) * SPEED,       // Sog nach innen
+      size: 0.4 + Math.random()*1.6
+    };
+  }
+ 
+  const mix  = (a,b,k) => [ a[0]+(b[0]-a[0])*k, a[1]+(b[1]-a[1])*k, a[2]+(b[2]-a[2])*k ];
+  const rgba = (c,a)   => `rgba(${c[0]|0},${c[1]|0},${c[2]|0},${a})`;
+ 
+  function colorFor(i,p){
+    const k = colorMode === 'always' ? 1 : Math.max(0, p.glow);
+    return mix(REST, HOVER[i], k);
+  }
+ 
+  function drawPortal(p, col){
+    const g = p.glow;
+    const R = p.r;
+    const e = 1 + g * 0.16;                 // leichtes Aufblühen beim Ansteuern
+    const intensity = 0.55 + g * 0.45;
+ 
+    // 1. Aussenschein
+    const halo = ctx.createRadialGradient(p.cx,p.cy,R*0.55,p.cx,p.cy,R*(2.6+g*1.1));
+    halo.addColorStop(0, rgba(col, 0.20*intensity));
+    halo.addColorStop(0.45, rgba(col, 0.06*intensity));
+    halo.addColorStop(1, rgba(col, 0));
+    ctx.fillStyle = halo;
+    ctx.beginPath();
+    ctx.arc(p.cx,p.cy,R*(2.6+g*1.1),0,Math.PI*2);
+    ctx.fill();
+ 
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+ 
+    // 2. Der Wirbel: verschachtelte Bögen, abwechselnd gegenläufig
+    const RINGS = 9;
+    for (let i=0;i<RINGS;i++){
+      const f     = i / (RINGS-1);
+      const dir   = i % 2 ? -1 : 1;
+      const rad   = R * e * (0.30 + f*0.68) + Math.sin(t*0.00016*SPEED + i*1.7) * R*0.028;
+      // Radiant pro Millisekunde. Innen etwas schneller als aussen.
+      const speed = (0.00016 + f*0.00009) * dir * SPEED;
+      const start = p.spin * speed + i*2.1;
+      const span  = 1.5 + Math.sin(t*0.00013*SPEED + i*0.9)*0.75 + f*1.4;
+      const alpha = (0.30 - f*0.17) * intensity;
+ 
+      ctx.beginPath();
+      ctx.arc(p.cx, p.cy, rad, start, start + span);
+      ctx.strokeStyle = rgba(col, alpha);
+      ctx.lineWidth = Math.max(1, R*(0.085 - f*0.055));
+      ctx.lineCap = 'round';
+      ctx.stroke();
+ 
+      // heller Faden auf dem Bogen
+      ctx.beginPath();
+      ctx.arc(p.cx, p.cy, rad, start + span*0.25, start + span*0.72);
+      ctx.strokeStyle = rgba(mix(col,[255,255,255],0.55), alpha*0.55);
+      ctx.lineWidth = Math.max(0.6, R*0.016);
+      ctx.stroke();
+    }
+ 
+    // 3. Leuchtender Kern
+    const core = ctx.createRadialGradient(p.cx,p.cy,0,p.cx,p.cy,R*e*0.86);
+    core.addColorStop(0,   rgba(mix(col,[255,255,255],0.42), 0.34*intensity));
+    core.addColorStop(0.5, rgba(col, 0.17*intensity));
+    core.addColorStop(1,   rgba(col, 0));
+    ctx.fillStyle = core;
+    ctx.beginPath();
+    ctx.arc(p.cx,p.cy,R*e*0.86,0,Math.PI*2);
+    ctx.fill();
+ 
+    // 4. Partikel auf Spiralbahnen
+    for (const s of p.parts){
+      const rr = R*e*(0.22 + s.rad*0.84);
+      const x  = p.cx + Math.cos(s.a)*rr;
+      const y  = p.cy + Math.sin(s.a)*rr;
+      const fade = (1 - Math.abs(s.rad-0.55)*1.3) * intensity;
+      if (fade <= 0) continue;
+      ctx.beginPath();
+      ctx.arc(x,y,s.size*(1+g*0.5),0,Math.PI*2);
+      ctx.fillStyle = rgba([255,255,255], 0.30*fade);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(x,y,s.size*(3.2+g*1.4),0,Math.PI*2);
+      ctx.fillStyle = rgba(col, 0.13*fade);
+      ctx.fill();
+    }
+ 
+    // 5. Scharfe Lichtkante als Abschluss des Kreises
+    ctx.beginPath();
+    ctx.arc(p.cx,p.cy,R*e,0,Math.PI*2);
+    ctx.strokeStyle = rgba(mix(col,[255,255,255],0.3), 0.22*intensity + g*0.25);
+    ctx.lineWidth = 1 + g*0.9;
+    ctx.stroke();
+ 
+    ctx.restore();
+ 
+    // 6. Lichtwurf auf den Boden
+    const fy = p.cy + R*1.75;
+    const spill = ctx.createRadialGradient(p.cx,fy,0,p.cx,fy,R*(1.8+g*0.7));
+    spill.addColorStop(0, rgba(col, 0.20*intensity));
+    spill.addColorStop(1, rgba(col, 0));
+    ctx.save();
+    ctx.translate(p.cx,fy); ctx.scale(1,0.24); ctx.translate(-p.cx,-fy);
+    ctx.fillStyle = spill;
+    ctx.beginPath(); ctx.arc(p.cx,fy,R*(1.8+g*0.7),0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+ 
+  function step(dt){
+    t += dt;
+    for (const p of portals){
+      p.glow += (p.target - p.glow) * Math.min(1, dt*0.0055);
+      if (!motion) continue;
+      p.spin += dt * (1 + Math.max(0,p.glow)*2.2);
+      for (const s of p.parts){
+        s.a   += s.sp * dt * (1 + Math.max(0,p.glow)*1.8);
+        s.rad -= s.pull * dt * (1 + Math.max(0,p.glow)*1.5);
+        if (s.rad < 0) Object.assign(s, newPart(false));
+      }
+    }
+  }
+ 
+  function render(){
+    ctx.fillStyle = '#0a0a0a';
+    ctx.fillRect(0,0,W,H);
+    portals.forEach((p,i) => drawPortal(p, colorFor(i,p)));
+ 
+    const v = ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*0.22,W/2,H/2,Math.max(W,H)*0.80);
+    v.addColorStop(0,'rgba(10,10,10,0)');
+    v.addColorStop(1,'rgba(10,10,10,0.93)');
+    ctx.fillStyle = v;
+    ctx.fillRect(0,0,W,H);
+  }
+ 
+  let last = performance.now(), raf = null;
+  function loop(now){
+    const dt = Math.min(now-last, 60);
+    last = now;
+    step(dt); render();
+    raf = requestAnimationFrame(loop);
+  }
+  const start = () => { if(!raf){ last = performance.now(); raf = requestAnimationFrame(loop);} };
+  const stop  = () => { if(raf){ cancelAnimationFrame(raf); raf = null; } };
+ 
+  doorEls.forEach((el,i) => {
+    const on  = () => portals.forEach((p,j) => p.target = j===i ? 1 : -0.30);
+    const off = () => portals.forEach(p => p.target = 0);
+    el.addEventListener('pointerenter', on);
+    el.addEventListener('pointerleave', off);
+    el.addEventListener('focus', on);
+    el.addEventListener('blur', off);
+  });
+ 
+  const bHover  = document.getElementById('modeHover');
+  const bAlways = document.getElementById('modeAlways');
+  const bMot    = document.getElementById('toggleMotion');
+ 
+  bHover.addEventListener('click', () => {
+    colorMode='hover';
+    bHover.setAttribute('aria-pressed','true');
+    bAlways.setAttribute('aria-pressed','false');
+  });
+  bAlways.addEventListener('click', () => {
+    colorMode='always';
+    bAlways.setAttribute('aria-pressed','true');
+    bHover.setAttribute('aria-pressed','false');
+  });
+  bMot.addEventListener('click', () => {
+    motion = !motion;
+    bMot.setAttribute('aria-pressed', String(motion));
+  });
+ 
+  window.addEventListener('resize', resize);
+  window.addEventListener('orientationchange', () => setTimeout(resize,120));
+  document.fonts?.ready.then(resize);
+  document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
+ 
+  resize();
+  if (!motion){ bMot.setAttribute('aria-pressed','false'); render(); }
+  start();
+})();
+</script>
+</body>
+</html>
