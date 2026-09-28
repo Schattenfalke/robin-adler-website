@@ -25,5 +25,7 @@ const prerenderedPath = container.dataset.path
 if (prerenderedPath !== undefined && trimSlash(prerenderedPath) === trimSlash(pathname)) {
   hydrateRoot(container, app)
 } else {
+  // Vorgerenderte Head-Tags der 404.html entfernen, sonst stünden sie nach dem Rendern doppelt da.
+  document.head.querySelectorAll('[data-prerendered]').forEach((tag) => tag.remove())
   createRoot(container).render(app)
 }

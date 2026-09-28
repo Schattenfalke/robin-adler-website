@@ -3,6 +3,7 @@ import { Navigate, type RouteObject } from 'react-router'
 import { LanguageLayout } from './components/Layout/LanguageLayout'
 import { DEFAULT_LOCALE, LOCALES, PAGE_KEYS, PAGES, type PageKey } from './lib/routes'
 import { BuildPage } from './pages/BuildPage'
+import { ContactPage } from './pages/ContactPage'
 import { FixPage } from './pages/FixPage'
 import { HomePage } from './pages/HomePage'
 import { ImpressumPage } from './pages/ImpressumPage'
@@ -17,6 +18,7 @@ const PAGE_ELEMENTS: Record<PageKey, ReactNode> = {
   review: <ReviewPage />,
   impressum: <ImpressumPage />,
   privacy: <PrivacyPage />,
+  contact: <ContactPage />,
 }
 
 /** Wird in `handle` jeder Seitenroute abgelegt, damit der Sprachumschalter die Gegenseite findet. */
@@ -44,13 +46,13 @@ export const routes: RouteObject[] = [
       ],
     }),
   ),
-  // Unbekanntes Sprachpräfix (z.B. /fr/…) → 404 in der Standardsprache.
+  // Unbekanntes Sprachpräfix (z.B. /fr/…) → 404 in der Standardsprache, mit Footer (Impressum-Link).
   {
     path: '*',
     element: (
-      <main className="mx-auto max-w-5xl px-4 py-16">
+      <LanguageLayout locale={DEFAULT_LOCALE}>
         <NotFoundPage />
-      </main>
+      </LanguageLayout>
     ),
   },
 ]

@@ -46,6 +46,12 @@
 }
 
 @layer base {
+  /* Sticky Header (4rem) und Cookie-Banner dürfen Sprungziele und Fokus nicht verdecken. */
+  html {
+    scroll-padding-top: 5rem;
+    scroll-padding-bottom: var(--banner-height, 0px);
+  }
+
   body {
     @apply bg-black-primary font-sans text-gray-text antialiased;
   }

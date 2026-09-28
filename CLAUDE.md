@@ -57,9 +57,30 @@ Beide selbst gehostet aus `public/fonts/`. Niemals Google Fonts per CDN einbinde
 - `npm run build` muss ohne Warnungen durchlaufen, bevor eine Aufgabe als fertig gilt.
 - Kein Next.js. Findet sich in den Referenzdokumenten `next/head`, `next/router`
   oder `next/image`, ist das ein Fehler in der Vorlage — ersetze durch
-  `react-helmet-async`, `react-i18next` bzw. Build-Zeit-Bildoptimierung.
+  React-19-Metadaten (siehe nächste Regel), `react-i18next` bzw. Build-Zeit-Bildoptimierung.
+- Kein `react-helmet-async`. React 19 hebt `<title>`, `<meta>` und `<link>` selbst in den
+  `<head>`, der Prerenderer schreibt sie in die statische HTML-Datei
+  (`src/components/Seo/PageMeta.tsx`). Nicht wieder einbauen.
+- Stammdaten (Anschrift, E-Mail, Telefon, Domain) stehen ausschließlich in `src/lib/site.ts`.
+  Impressum, Datenschutz, Schema.org und Footer lesen daraus. Nirgends sonst hart schreiben.
+  Einzige Ausnahme: Die Ziel-Domain des Deployments steht in `public/CNAME`; `site.ts`
+  leitet `SITE_URL` daraus ab. Weicht sie von `PRODUCTION_URL` ab, ist es ein Vorschau-Build
+  und jede Seite bekommt `noindex`. Go-Live = CNAME ändern (siehe docs/05-deployment.md).
 - Routen werden zentral in `src/lib/routes.ts` gepflegt. Router, Prerenderer und
   Sitemap lesen daraus. Keine Route an zwei Stellen hart schreiben.
+- Rechtstexte (Impressum, Datenschutz, Cookie-Banner) sind in DE und EN gleich vollständig.
+  Keine gekürzte Fassung in einer der Sprachen.
+
+## Korrektheit schlägt Stilregel
+
+Würde eine Projektregel dazu führen, dass Code seine Funktion verliert, ist die Funktion
+wichtiger. Dann: Ausnahme setzen, direkt am Code mit Kommentar begründen, im Bericht
+der Sitzung erwähnen. Stillschweigende Ausnahmen gibt es nicht.
+
+Präzedenzfall: `gtag.js` braucht im `dataLayer` das `arguments`-Objekt. Ein Array
+(Rest-Parameter, "moderner" Stil) wird kommentarlos verworfen — GA misst dann nichts.
+Deshalb steht in `src/lib/analytics.ts` bewusst eine `function` mit `arguments` und
+einem Lint-Disable samt Begründung.
 
 ## Referenzdokumente
 
