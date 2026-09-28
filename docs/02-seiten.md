@@ -9,6 +9,12 @@
 ## 4. PAGE STRUCTURE & FLOW
 
 ### 4.1 Hero / Home Page (`/`)
+
+> **Stand nach der Zwischensitzung „Lichtportale“:** Die SVG-Türen unten sind überholt.
+> Verbindlich ist `docs/prototypes/lichtportale.html`, umgesetzt in `src/components/Hero/`
+> (`PortalHero`, `usePortalCanvas`, `portalRenderer`). Drei Canvas-Wirbel hinter den Tür-Links,
+> Positionen zur Laufzeit aus den DOM-Rechtecken gemessen, Farben aus Tokens
+> (`--red-primary`, `--red-light`, `--gold-fix`, `--blue-review`). Tempo nur über `SPEED`.
 **Purpose**: Introduce the 3 Doors, let user choose their path.
 
 **Structure**:

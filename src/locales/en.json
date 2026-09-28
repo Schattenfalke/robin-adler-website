@@ -145,9 +145,10 @@
     }
   },
   "hero": {
-    "title": "Building systems that carry people",
-    "subtitle": "Not systems carried by people.",
-    "doorsLabel": "Areas"
+    "title": "Building systems that carry people.",
+    "subtitle": "Three paths. Pick one.",
+    "doorsLabel": "Areas",
+    "titleAccent": "Not the other way around."
   },
   "doors": {
     "build": {

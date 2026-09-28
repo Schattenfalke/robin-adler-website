@@ -39,7 +39,12 @@ export function LanguageLayout({ locale, children }: Props) {
           {t('header.skipLink')}
         </a>
         <Header locale={locale} />
-        <main id="main" tabIndex={-1} className="mx-auto w-full max-w-5xl flex-1 px-4 py-16 outline-none">
+        {/* Die Startseite ist randlos (Portal-Hero über die volle Breite), alle anderen im Satzspiegel. */}
+        <main
+          id="main"
+          tabIndex={-1}
+          className={`w-full flex-1 outline-none ${page === 'home' ? '' : 'mx-auto max-w-5xl px-4 py-16'}`}
+        >
           {children ?? <Outlet />}
         </main>
         <Footer locale={locale} />

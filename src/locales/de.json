@@ -145,9 +145,10 @@
     }
   },
   "hero": {
-    "title": "Systeme bauen, die Menschen tragen",
-    "subtitle": "Nicht Systeme, von denen Menschen getragen werden.",
-    "doorsLabel": "Bereiche"
+    "title": "Systeme bauen, die Menschen tragen.",
+    "subtitle": "Drei Wege. Such dir einen aus.",
+    "doorsLabel": "Bereiche",
+    "titleAccent": "Nicht umgekehrt."
   },
   "doors": {
     "build": {
