@@ -5,6 +5,7 @@ import {
   isSettling,
   readPalette,
   RECEDE,
+  reduceParticles,
   renderScene,
   stepPortals,
 } from './portalRenderer'
@@ -25,7 +26,19 @@ const NOOP_CONTROLS: PortalControls = { activate: () => {}, deactivate: () => {}
  */
 const DPR_STEPS = [2, 1.5, 1] as const
 const MIN_FPS = 45
-const SAMPLE_FRAMES = 60
+/*
+ * Messfenster nach Zeit, nicht nach Bildern: Bei 60 Bildern bräuchte ein Gerät mit 12 fps
+ * fünf Sekunden pro Entscheidung — genau die Geräte, die schnell entlastet werden müssen.
+ */
+const SAMPLE_WINDOW_MS = 1000
+/** Auf der untersten Stufe zusätzlich nur noch dieser Anteil der Partikel. */
+const LOW_END_PARTICLES = 0.5
+/*
+ * Erst nach dieser Zeit messen: Seitenaufbau, Hydration und Schriftladen erzeugen kurze
+ * Einbrüche. Da die Auflösung nie wieder steigt, würde ein solcher Einbruch ein starkes
+ * Gerät dauerhaft herunterstufen.
+ */
+const MEASURE_DELAY_MS = 1000
 
 /**
  * Lebenszyklus des Portal-Canvas. Die Portalpositionen werden zur Laufzeit aus den
@@ -62,6 +75,7 @@ export function usePortalCanvas(
     let dprStep = 0
     let sampleTime = 0
     let sampleFrames = 0
+    const mountedAt = performance.now()
 
     const render = () => renderScene(ctx, width, height, t, portals, palette, vignette)
 
@@ -78,6 +92,7 @@ export function usePortalCanvas(
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, DPR_STEPS[dprStep] ?? 1)
+      canvas.dataset.quality = String(dprStep) // 0 = volle Auflösung; zum Nachsehen in den Entwicklertools
       width = canvas.clientWidth
       height = canvas.clientHeight
       canvas.width = Math.round(width * dpr)
@@ -88,17 +103,19 @@ export function usePortalCanvas(
       render() // auch ohne laufende Schleife ein korrektes Bild
     }
 
-    // Mittelt die Bilddauer über SAMPLE_FRAMES und senkt bei Bedarf eine Stufe.
-    const adaptResolution = (dt: number) => {
+    // Mittelt die Bildrate über SAMPLE_WINDOW_MS und senkt bei Bedarf eine Stufe.
+    const adaptResolution = (dt: number, now: number) => {
       if (dprStep >= DPR_STEPS.length - 1) return
+      if (now - mountedAt < MEASURE_DELAY_MS) return
       sampleTime += dt
       sampleFrames += 1
-      if (sampleFrames < SAMPLE_FRAMES) return
+      if (sampleTime < SAMPLE_WINDOW_MS) return
       const fps = (sampleFrames * 1000) / sampleTime
-      sampleTime = 0
+      sampleTime = 0 // neues Fenster, auch nach einem Stufenwechsel
       sampleFrames = 0
       if (fps < MIN_FPS) {
         dprStep += 1
+        if (dprStep === DPR_STEPS.length - 1) reduceParticles(portals, LOW_END_PARTICLES)
         resize()
       }
     }
@@ -111,7 +128,7 @@ export function usePortalCanvas(
       if (motion) t += dt // ohne Bewegung atmen auch die Bögen nicht
       stepPortals(portals, dt, motion)
       render()
-      if (motion) adaptResolution(dt)
+      if (motion) adaptResolution(dt, now)
       raf = shouldRun() ? requestAnimationFrame(frame) : 0
     }
 

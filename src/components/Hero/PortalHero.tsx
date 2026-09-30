@@ -6,6 +6,8 @@ import { usePortalCanvas } from './usePortalCanvas'
 
 /**
  * Hero mit den drei Lichtportalen (Vorlage: docs/prototypes/lichtportale.html).
+ * Höhe = Viewport minus Header minus Cookie-Banner (--banner-height, solange er steht),
+ * damit die Portale beim ersten Besuch über dem Banner liegen statt darunter.
  * Der Canvas liegt hinter den Türen und malt dorthin, wo deren Ringe im Layout liegen.
  */
 export function PortalHero() {
@@ -15,7 +17,7 @@ export function PortalHero() {
   const portals = usePortalCanvas(canvasRef, ringRefs, useReducedMotion())
 
   return (
-    <section className="relative flex min-h-[calc(100svh-4rem)] flex-col items-center justify-center overflow-hidden px-4 pt-8 pb-20">
+    <section className="relative flex min-h-[calc(100svh-4rem-var(--banner-height,0px))] flex-col items-center justify-center overflow-hidden px-4 pt-8 pb-20">
       <canvas ref={canvasRef} aria-hidden="true" className="pointer-events-none absolute inset-0 block size-full" />
 
       <div className="relative z-10 mb-[clamp(2.5rem,8vh,5.5rem)] max-w-[54rem] text-center">

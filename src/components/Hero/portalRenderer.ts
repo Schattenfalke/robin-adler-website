@@ -60,6 +60,15 @@ const newParticle = (spread: boolean): Particle => ({
   size: 0.4 + Math.random() * 1.6,
 })
 
+/**
+ * Weniger Partikel für schwache Geräte (unterste Auflösungsstufe). Kürzt nur,
+ * die verbleibenden laufen unverändert weiter — kein Sprung im Bild.
+ */
+export function reduceParticles(portals: Portal[], fraction: number) {
+  const count = Math.round(PARTICLES_PER_PORTAL * fraction)
+  for (const p of portals) p.parts.length = Math.min(p.parts.length, count)
+}
+
 export const createPortal = (): Portal => ({
   cx: 0,
   cy: 0,
