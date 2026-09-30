@@ -70,6 +70,7 @@
   "cookies": {
     "ariaLabel": "Hinweis zur Datenverarbeitung",
     "text": "Ich nutze Google Analytics, um zu verstehen, welche Inhalte hier hilfreich sind. Dabei werden Cookies gesetzt und Daten an Google übermittelt. Ohne deine Zustimmung passiert nichts davon.",
+    "textShort": "Google Analytics hilft mir, die Seite zu verbessern. Dabei werden Cookies gesetzt und Daten an Google übermittelt – nur mit deiner Zustimmung.",
     "privacyLink": "Datenschutzerklärung",
     "accept": "Einverstanden",
     "reject": "Nur technisch Notwendiges"
@@ -145,9 +146,10 @@
     }
   },
   "hero": {
-    "title": "Systeme bauen, die Menschen tragen",
-    "subtitle": "Nicht Systeme, von denen Menschen getragen werden.",
-    "doorsLabel": "Bereiche"
+    "title": "Systeme bauen, die Menschen tragen.",
+    "subtitle": "Drei Wege. Such dir einen aus.",
+    "doorsLabel": "Bereiche",
+    "titleAccent": "Nicht umgekehrt."
   },
   "doors": {
     "build": {

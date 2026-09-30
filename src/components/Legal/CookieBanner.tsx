@@ -43,8 +43,9 @@ export function CookieBanner({ locale }: { locale: Locale }) {
 
   if (consent !== null) return null
 
+  // Beide Schaltflächen identisch: gleiche Größe, gleiche Gestaltung (keine Dark Patterns).
   const buttonClass =
-    'cursor-pointer border border-gray-muted px-6 py-3 font-medium text-gray-text hover:border-red-light hover:text-red-light'
+    'cursor-pointer border border-gray-muted px-3 py-2.5 text-sm font-medium text-gray-text hover:border-red-light hover:text-red-light sm:px-6 sm:py-3 sm:text-base'
 
   return (
     <section
@@ -52,15 +53,17 @@ export function CookieBanner({ locale }: { locale: Locale }) {
       aria-labelledby="cookie-banner-text"
       className="sticky bottom-0 z-50 border-t border-red-primary bg-black-secondary"
     >
-      <div className="mx-auto flex max-w-5xl flex-col gap-5 px-4 py-5 lg:flex-row lg:items-center">
-        <p id="cookie-banner-text" className="flex-1 text-sm leading-relaxed">
+      <div className="mx-auto flex max-w-5xl flex-col gap-3 px-4 py-3 sm:gap-5 sm:py-5 lg:flex-row lg:items-center">
+        <p id="cookie-banner-text" className="flex-1 text-sm leading-snug sm:leading-relaxed">
           <span className="sr-only">{t('cookies.ariaLabel')}: </span>
-          {t('cookies.text')}{' '}
+          {/* Mobil die Kurzfassung — nennt weiterhin Zweck, Cookies und Übermittlung an Google. */}
+          <span className="sm:hidden">{t('cookies.textShort')}</span>
+          <span className="hidden sm:inline">{t('cookies.text')}</span>{' '}
           <Link to={pathFor('privacy', locale)} className="text-red-light underline underline-offset-2">
             {t('cookies.privacyLink')}
           </Link>
         </p>
-        <div className="grid shrink-0 grid-cols-1 gap-3 sm:grid-cols-2">
+        <div className="grid shrink-0 grid-cols-2 gap-3">
           <button type="button" onClick={() => setConsent('denied')} className={buttonClass}>
             {t('cookies.reject')}
           </button>
